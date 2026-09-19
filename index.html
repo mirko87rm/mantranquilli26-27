@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MANTRANQUILLI26/27</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header><div><h1>MANTRANQUILLI26/27</h1><p>Gestione scambi fantacalcio</p></div><span id="connection">Connessione…</span></header>
+<main>
+<section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section>
+
+<section class="card"><h2>Rose delle squadre</h2>
+<div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div>
+<div id="rosterSummary" class="hint"></div>
+<div id="roster" class="roster-grid">Caricamento…</div>
+</section>
+
+<section class="card"><h2>Proponi uno scambio</h2>
+<div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div>
+<div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div>
+<div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div>
+<pre id="message"></pre><p id="feedback" class="feedback"></p>
+</section>
+<section class="card"><h2>Proposte recenti</h2><div id="trades">Caricamento…</div></section>
+</main>
+<script src="app.js"></script>
+</body></html>
