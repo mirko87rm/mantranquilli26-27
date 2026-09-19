@@ -115,6 +115,31 @@ function renderStandings(){
  $('standingsInfo').textContent=completed?`Aggiornata dopo la ${maxRound}ª giornata con ${completed} partite disputate.`:'Nessun risultato inserito nel calendario.';
 }
 
+function renderChampionsStandings(){
+ const info=$('champStandingsInfo');
+ const groups={A:{},B:{}};
+ const rounds=CALENDARS.champions||[];
+ let completed=0;
+ rounds.forEach(r=>r.matches.forEach(m=>{
+   const g=String(m.group||'A'); if(!groups[g])groups[g]={};
+   if(m.bye)return;
+   const sc=scoreParts(m.score); if(!sc)return;
+   const hn=String(m.home||'').toUpperCase(), an=String(m.away||'').toUpperCase();
+   if(!groups[g][hn])groups[g][hn]={name:m.home,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+   if(!groups[g][an])groups[g][an]={name:m.away,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+   const h=groups[g][hn], a=groups[g][an];
+   h.pg++;a.pg++;h.gf+=sc[0];h.ga+=sc[1];a.gf+=sc[1];a.ga+=sc[0];
+   if(sc[0]>sc[1]){h.w++;a.l++;h.pts+=3}else if(sc[0]<sc[1]){a.w++;h.l++;a.pts+=3}else{h.d++;a.d++;h.pts++;a.pts++}
+   completed++;
+ }));
+ ['A','B'].forEach(g=>{
+   const rows=Object.values(groups[g]).sort((a,b)=>b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'it'));
+   const tbody=$('champStandings'+g)?.querySelector('tbody');
+   if(tbody)tbody.innerHTML=rows.map((r,i)=>`<tr><td><strong>${i+1}</strong></td><td><strong>${esc(r.name)}</strong></td><td>${r.pg}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gf-r.ga>0?'+':''}${r.gf-r.ga}</td><td><strong>${r.pts}</strong></td></tr>`).join('')||'<tr><td colspan="10">Nessun risultato</td></tr>';
+ });
+ if(info)info.textContent=completed?`Aggiornata con ${completed} partite disputate.`:'Nessun risultato inserito nel calendario Champions League.';
+}
+
 let activeCalendar='serie';
 
 function renderCalendarRoundOptions(){
@@ -155,4 +180,5 @@ renderCalendarRoundOptions();
 
 window.confirmTrade=confirmTrade;
 renderStandings();
+renderChampionsStandings();
 load();
