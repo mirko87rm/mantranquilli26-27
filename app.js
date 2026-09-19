@@ -140,6 +140,46 @@ function renderChampionsStandings(){
  if(info)info.textContent=completed?`Aggiornata con ${completed} partite disputate.`:'Nessun risultato inserito nel calendario Champions League.';
 }
 
+let activeStats='serie';
+
+function renderStatistics(){
+ const rounds=CALENDARS[activeStats]||[];
+ const stats={};
+ const ensure=(name)=>{const k=String(name||'').toUpperCase(); if(!stats[k])stats[k]={name,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; return stats[k]};
+ let completed=0;
+ rounds.forEach(r=>r.matches.forEach(m=>{
+   if(m.bye)return;
+   const sc=scoreParts(m.score); if(!sc)return;
+   const h=ensure(m.home), a=ensure(m.away);
+   h.pg++; a.pg++; h.gf+=sc[0]; h.ga+=sc[1]; a.gf+=sc[1]; a.ga+=sc[0];
+   if(sc[0]>sc[1]){h.w++;a.l++;h.pts+=3}
+   else if(sc[0]<sc[1]){a.w++;h.l++;a.pts+=3}
+   else{h.d++;a.d++;h.pts++;a.pts++}
+   completed++;
+ }));
+ const rows=Object.values(stats).sort((a,b)=>b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'it'));
+ const tbody=$('statsTable')?.querySelector('tbody');
+ if(tbody)tbody.innerHTML=rows.map((r,i)=>`<tr><td><strong>${i+1}</strong></td><td><strong>${esc(r.name)}</strong></td><td>${r.pg}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gf-r.ga>0?'+':''}${r.gf-r.ga}</td><td><strong>${r.pts}</strong></td><td>${r.pg?(r.gf/r.pg).toFixed(2):'0.00'}</td></tr>`).join('')||'<tr><td colspan="11">Nessun risultato disponibile.</td></tr>';
+ const hi=$('statsHighlights');
+ if(hi){
+   if(!rows.length){hi.innerHTML='<div class="stats-highlight"><strong>Nessun dato</strong><span>Inserisci i risultati nel calendario.</span></div>';}
+   else{
+     const bestAttack=[...rows].sort((a,b)=>b.gf-a.gf)[0];
+     const bestDefense=[...rows].sort((a,b)=>a.ga-b.ga)[0];
+     const bestWin=[...rows].filter(r=>r.w>0).sort((a,b)=>b.w-a.w || b.pts-a.pts)[0];
+     const avg=[...rows].sort((a,b)=>(b.gf/b.pg)-(a.gf/a.pg))[0];
+     hi.innerHTML=`<div class="stats-highlight"><strong>⚽ Miglior attacco</strong><span>${esc(bestAttack.name)} · ${bestAttack.gf} gol</span></div><div class="stats-highlight"><strong>🛡️ Miglior difesa</strong><span>${esc(bestDefense.name)} · ${bestDefense.ga} gol subiti</span></div><div class="stats-highlight"><strong>🏆 Più vittorie</strong><span>${esc(bestWin?.name||'—')} · ${bestWin?.w||0}</span></div><div class="stats-highlight"><strong>📈 Media gol più alta</strong><span>${esc(avg.name)} · ${(avg.gf/avg.pg).toFixed(2)} a partita</span></div>`;
+   }
+ }
+ const maxRound=rounds.filter(r=>r.matches.some(m=>scoreParts(m.score))).reduce((x,r)=>Math.max(x,r.round),0);
+ if($('statsInfo'))$('statsInfo').textContent=completed?`Aggiornata con ${completed} partite disputate${maxRound?` · ultima giornata completata: ${maxRound}ª`:''}.`:'Nessun risultato inserito nel calendario.';
+}
+
+document.querySelectorAll('.stats-tab').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('.stats-tab').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active'); activeStats=btn.dataset.stats; renderStatistics();
+});
+
 let activeCalendar='serie';
 
 function renderCalendarRoundOptions(){
@@ -181,4 +221,5 @@ renderCalendarRoundOptions();
 window.confirmTrade=confirmTrade;
 renderStandings();
 renderChampionsStandings();
+renderStatistics();
 load();

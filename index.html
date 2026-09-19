@@ -46,7 +46,13 @@
 
 <section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
 
-<section id="section-statistiche" class="page-section"><section class="card empty-card"><div class="big-icon">📊</div><h2>Statistiche</h2><p>Statistiche della lega in arrivo.</p><p class="hint">Qui potremo mostrare presenze, gol, assist e altre statistiche.</p></section></section>
+<section id="section-statistiche" class="page-section">
+<section class="card"><h2>📊 Statistiche</h2><p id="statsInfo" class="hint"></p>
+<div class="stats-tabs"><button class="stats-tab active" data-stats="serie">Serie A</button><button class="stats-tab" data-stats="champions">Champions League</button></div>
+<div id="statsHighlights" class="stats-highlights"></div>
+<div class="table-wrap"><table id="statsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th><th>Media GF</th></tr></thead><tbody></tbody></table></div>
+<p class="hint stats-note">Le statistiche sono calcolate automaticamente dai risultati inseriti nei calendari. Le statistiche individuali dei giocatori (gol, assist, presenze) saranno disponibili quando verranno inseriti i dati dei singoli calciatori.</p>
+</section></section>
 <section id="section-regolamento" class="page-section"><section class="card regulation-card">
 <h2>📖 Regolamento MANTRANQUILLI 26/27</h2>
 <p class="hint">Regolamento ufficiale della lega, in vigore dalle ore 16:00 del 19 agosto 2026.</p>
