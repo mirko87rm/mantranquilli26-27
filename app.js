@@ -36,7 +36,7 @@ async function initAuth(){
   $('loginBtn').onclick=async()=>{
     const username=$('loginUsername').value.trim().toLowerCase(), password=$('loginPassword').value;
     if(!username||!password)return authMessage($('loginFeedback'),'Inserisci username e password.',true);
-    const email=`${username}@mantranquilli26-27.local`;
+    const email=`${username}@mantranquilli26-27.com`;
     const r=await db.auth.signInWithPassword({email,password});
     if(r.error)return authMessage($('loginFeedback'),'Username o password non corretti.',true);
     closeAuth();await refreshAuth();show('Accesso effettuato.',false);
@@ -47,7 +47,7 @@ async function initAuth(){
     if(password.length<6)return authMessage($('registerFeedback'),'La password deve avere almeno 6 caratteri.',true);
     if(password!==password2)return authMessage($('registerFeedback'),'Le password non coincidono.',true);
     if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
-    const email=`${username}@mantranquilli26-27.local`;
+    const email=`${username}@mantranquilli26-27.com`;
     const r=await db.auth.signUp({email,password,options:{data:{username,team_id:teamId}}});
     if(r.error)return authMessage($('registerFeedback'),r.error.message,true);
     if(!r.data.session)return authMessage($('registerFeedback'),'Account creato. Se la conferma email è attiva in Supabase, va disattivata per questo sistema senza email.',false);
