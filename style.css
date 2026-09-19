@@ -32,4 +32,4 @@ main{flex:1;max-width:none;margin:25px auto;padding:0 24px;width:100%}
 
 .table-wrap{overflow-x:auto}.table-wrap table{min-width:760px}.table-wrap th{font-size:13px;white-space:nowrap}.table-wrap td{white-space:nowrap}.standings-note{margin-top:14px}.table-wrap tbody tr:first-child{background:#f7f7f7}
 
-.champ-standings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}.champ-standings-grid h3{margin:0 0 8px}.champ-standings-grid .table-wrap{overflow-x:auto}@media(max-width:900px){.champ-standings-grid{grid-template-columns:1fr}}
+.champ-standings-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:14px}.champ-standings-grid>div{background:#fff;border:1px solid #eee;border-radius:16px;padding:18px}.champ-standings-grid h3{font-size:22px;margin:0 0 12px}.champ-standings-grid h3{margin:0 0 8px}.champ-standings-grid .table-wrap{overflow-x:auto}
