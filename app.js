@@ -3,6 +3,68 @@ const SUPABASE_KEY='sb_publishable_YP7r7R11fwdYYAloEBG5sQ_z8rvZ1RC';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);let teams=[],players=[],marketOpen=false;
 
+let currentUser=null,currentProfile=null;
+function authMessage(el,msg,error=false){if(el){el.textContent=msg||'';el.classList.toggle('error',!!error)}}
+function openAuth(mode='login'){
+  $('authModal').classList.remove('hidden');
+  $('loginForm').classList.toggle('hidden',mode!=='login');
+  $('registerForm').classList.toggle('hidden',mode!=='register');
+  authMessage($('loginFeedback'),'');authMessage($('registerFeedback'),'');
+}
+function closeAuth(){$('authModal').classList.add('hidden')}
+function setAuthUI(){
+  const area=$('authArea'); if(!area)return;
+  if(currentUser&&currentProfile){
+    area.innerHTML=`<div class="auth-user"><span>👤 ${esc(currentProfile.username)} · ${esc(currentProfile.team?.name||'')}</span><button id="logoutBtn">Esci</button></div>`;
+    $('logoutBtn').onclick=async()=>{await db.auth.signOut()};
+  }else{
+    area.innerHTML='<button id="openLogin" class="auth-btn">Accedi</button><button id="openRegister" class="auth-btn secondary">Registrati</button>';
+    $('openLogin').onclick=()=>openAuth('login');$('openRegister').onclick=()=>openAuth('register');
+  }
+}
+async function refreshAuth(){
+  const r=await db.auth.getSession(); currentUser=r.data.session?.user||null; currentProfile=null;
+  if(currentUser){
+    const p=await db.from('manager_profiles').select('username,team_id,teams:team_id(name)').eq('user_id',currentUser.id).maybeSingle();
+    if(!p.error)currentProfile=p.data;
+  }
+  setAuthUI();
+}
+async function initAuth(){
+  $('closeAuth').onclick=closeAuth;
+  $('switchRegister').onclick=()=>openAuth('register');$('switchLogin').onclick=()=>openAuth('login');
+  $('loginBtn').onclick=async()=>{
+    const username=$('loginUsername').value.trim().toLowerCase(), password=$('loginPassword').value;
+    if(!username||!password)return authMessage($('loginFeedback'),'Inserisci username e password.',true);
+    const email=`${username}@mantranquilli26-27.local`;
+    const r=await db.auth.signInWithPassword({email,password});
+    if(r.error)return authMessage($('loginFeedback'),'Username o password non corretti.',true);
+    closeAuth();await refreshAuth();show('Accesso effettuato.',false);
+  };
+  $('registerBtn').onclick=async()=>{
+    const username=$('registerUsername').value.trim().toLowerCase(), password=$('registerPassword').value, password2=$('registerPassword2').value, teamId=$('registerTeam').value;
+    if(!/^[a-z0-9_-]{3,30}$/.test(username))return authMessage($('registerFeedback'),'Username: 3-30 caratteri, solo lettere, numeri, _ o -.',true);
+    if(password.length<6)return authMessage($('registerFeedback'),'La password deve avere almeno 6 caratteri.',true);
+    if(password!==password2)return authMessage($('registerFeedback'),'Le password non coincidono.',true);
+    if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
+    const email=`${username}@mantranquilli26-27.local`;
+    const r=await db.auth.signUp({email,password,options:{data:{username,team_id:teamId}}});
+    if(r.error)return authMessage($('registerFeedback'),r.error.message,true);
+    if(!r.data.session)return authMessage($('registerFeedback'),'Account creato. Se la conferma email è attiva in Supabase, va disattivata per questo sistema senza email.',false);
+    closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
+  };
+  db.auth.onAuthStateChange(async()=>{await refreshAuth();});
+  await refreshAuth();
+}
+async function loadRegisterTeams(){
+  const sel=$('registerTeam'); if(!sel)return;
+  const r=await db.from('teams').select('id,name').order('name'); if(r.error)return;
+  const used=await db.from('manager_profiles').select('team_id');
+  const usedIds=new Set((used.data||[]).map(x=>x.team_id));
+  sel.innerHTML='<option value="">Seleziona la squadra…</option>'+r.data.filter(t=>!usedIds.has(t.id)).map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');
+}
+
+
 function setupNavigation(){
  document.querySelectorAll('.nav-item').forEach(btn=>btn.onclick=()=>{
    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -29,7 +91,7 @@ async function load(){
  const t=await db.from('teams').select('id,name').order('name');
  const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
- teams=t.data;players=p.data;$('connection').textContent='Database collegato';
+ teams=t.data;players=p.data;$('connection').textContent='Database collegato';await loadRegisterTeams();
  teams.forEach(x=>{ $('teamA').add(new Option(x.name,x.id));$('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
  $('homeTeams').textContent=teams.length+' squadre';
  if(teams.length>1)$('teamB').selectedIndex=1;
@@ -60,12 +122,12 @@ function renderRoster(){
 
 async function loadMarket(){const r=await db.from('market_sessions').select('*').order('created_at',{ascending:false}).limit(1);if(!r.error&&r.data?.length){marketOpen=!!r.data[0].is_open}renderMarket()}
 function renderMarket(){$('marketStatus').textContent=marketOpen?'APERTO':'CHIUSO';$('toggleMarket').textContent=marketOpen?'Chiudi mercato':'Apri mercato';if($('homeMarket'))$('homeMarket').textContent=marketOpen?'APERTO':'CHIUSO'}
-$('toggleMarket').onclick=async()=>{marketOpen=!marketOpen;renderMarket();const r=await db.from('market_sessions').insert({name:'Mercato 1',is_open:marketOpen,max_players_per_team:5});if(r.error){marketOpen=!marketOpen;renderMarket();show(r.error.message,true)}};
+$('toggleMarket').onclick=async()=>{if(!currentUser)return openAuth('login');marketOpen=!marketOpen;renderMarket();const r=await db.from('market_sessions').insert({name:'Mercato 1',is_open:marketOpen,max_players_per_team:5});if(r.error){marketOpen=!marketOpen;renderMarket();show(r.error.message,true)}};
 function selected(id){return [...$(id).selectedOptions].map(o=>({id:o.value,name:o.textContent}))}
 function validate(){const a=$('teamA').value,b=$('teamB').value,x=selected('playersA'),y=selected('playersB');if(!marketOpen)return 'Il mercato è chiuso.';if(a===b)return 'Scegli due squadre diverse.';if(!x.length||x.length!==y.length||x.length>5)return 'Seleziona da 1 a 5 giocatori per parte, con lo stesso numero.';return null}
 function buildMessage(){const x=selected('playersA'),y=selected('playersB');return `🔄 MANTRANQUILLI26/27\n${$('teamA').selectedOptions[0].text} cede: ${x.map(v=>v.name).join(', ')}\n${$('teamB').selectedOptions[0].text} cede: ${y.map(v=>v.name).join(', ')}`}
 $('prepare').onclick=()=>{const e=validate();if(e)return show(e,true);const text=buildMessage();$('message').textContent=text;window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');show('Messaggio pronto per WhatsApp.',false)};
-$('saveTrade').onclick=async()=>{const e=validate();if(e)return show(e,true);const x=selected('playersA'),y=selected('playersB');const r=await db.from('trades').insert({team_a_id:$('teamA').value,team_b_id:$('teamB').value,status:'pending'}).select('id').single();if(r.error)return show(r.error.message,true);const rows=[...x.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'ceded'})),...y.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'acquired'}))];const q=await db.from('trade_players').insert(rows);if(q.error)return show(q.error.message,true);show('Proposta registrata.',false);await loadTrades()};
+$('saveTrade').onclick=async()=>{if(!currentUser)return openAuth('login');const e=validate();if(e)return show(e,true);const x=selected('playersA'),y=selected('playersB');const r=await db.from('trades').insert({team_a_id:$('teamA').value,team_b_id:$('teamB').value,status:'pending'}).select('id').single();if(r.error)return show(r.error.message,true);const rows=[...x.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'ceded'})),...y.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'acquired'}))];const q=await db.from('trade_players').insert(rows);if(q.error)return show(q.error.message,true);show('Proposta registrata.',false);await loadTrades()};
 
 async function confirmTrade(id){
  const r=await db.rpc('confirm_trade',{p_trade_id:id});
@@ -222,4 +284,5 @@ window.confirmTrade=confirmTrade;
 renderStandings();
 renderChampionsStandings();
 renderStatistics();
+initAuth();
 load();

@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header><button id="menuToggle" class="menu-toggle" aria-label="Apri menu">☰</button><div><h1>MANTRANQUILLI26/27</h1><p>Gestione fantacalcio</p></div><span id="connection">Connessione…</span></header>
+<header><button id="menuToggle" class="menu-toggle" aria-label="Apri menu">☰</button><div><h1>MANTRANQUILLI26/27</h1><p>Gestione fantacalcio</p></div><span id="connection">Connessione…</span><div id="authArea"><button id="openLogin" class="auth-btn">Accedi</button><button id="openRegister" class="auth-btn secondary">Registrati</button></div></header>
 <div class="layout">
 <aside id="sidebar" class="sidebar">
   <div class="side-title">MENU</div>
@@ -20,6 +20,32 @@
   <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
   <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
 </aside>
+<div id="authModal" class="auth-modal hidden">
+  <div class="auth-box">
+    <button id="closeAuth" class="auth-close" aria-label="Chiudi">×</button>
+    <div id="loginForm">
+      <h2>Accedi</h2>
+      <p class="hint">Inserisci username e password.</p>
+      <label>Username<input id="loginUsername" autocomplete="username" maxlength="30"></label>
+      <label>Password<input id="loginPassword" type="password" autocomplete="current-password"></label>
+      <button id="loginBtn">Accedi</button>
+      <p id="loginFeedback" class="feedback"></p>
+      <p class="auth-switch">Non hai un account? <button id="switchRegister" class="link-btn">Registrati</button></p>
+    </div>
+    <div id="registerForm" class="hidden">
+      <h2>Registrazione</h2>
+      <p class="hint">Scegli username, password e la tua squadra. Ogni squadra può essere assegnata a un solo account.</p>
+      <label>Username<input id="registerUsername" autocomplete="username" maxlength="30" placeholder="es. Mirko87"></label>
+      <label>Password<input id="registerPassword" type="password" autocomplete="new-password" minlength="6"></label>
+      <label>Conferma password<input id="registerPassword2" type="password" autocomplete="new-password" minlength="6"></label>
+      <label>Squadra<select id="registerTeam"><option value="">Seleziona la squadra…</option></select></label>
+      <button id="registerBtn">Crea account</button>
+      <p id="registerFeedback" class="feedback"></p>
+      <p class="auth-switch">Hai già un account? <button id="switchLogin" class="link-btn">Accedi</button></p>
+    </div>
+  </div>
+</div>
+
 <main>
 <section id="section-home" class="page-section active-section">
   <section class="card hero-card"><h2>Benvenuto in MANTRANQUILLI26/27</h2><p>Usa il menu a sinistra per accedere alle sezioni della lega.</p><div class="home-grid"><div><strong>Squadre</strong><span id="homeTeams">Caricamento…</span></div><div><strong>Stato mercato</strong><span id="homeMarket">Caricamento…</span></div></div></section>
