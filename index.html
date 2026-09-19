@@ -34,7 +34,9 @@
 <section class="card"><h2>Calendario</h2><div class="calendar-tabs"><button class="calendar-tab active" data-cal="serie">Serie A</button><button class="calendar-tab" data-cal="champions">Champions League</button></div><div class="calendar-controls"><label>Giornata<select id="calendarRound"></select></label><div id="calendarRoundInfo" class="hint"></div></div><div id="calendarContent" class="calendar-content">Caricamento…</div></section>
 </section>
 
-<section id="section-classifica" class="page-section"><section class="card empty-card"><div class="big-icon">🏆</div><h2>Classifica</h2><p>La classifica della lega sarà visualizzata qui.</p><p class="hint">Potremo aggiungere punti, vittorie, pareggi, sconfitte, gol fatti e gol subiti.</p></section></section>
+<section id="section-classifica" class="page-section">
+<section class="card"><h2>Classifica Serie A</h2><p id="standingsInfo" class="hint"></p><div class="table-wrap"><table id="standingsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Serie A.</p></section>
+</section>
 
 <section id="section-scambi" class="page-section">
 <section class="card"><h2>Proponi uno scambio</h2><div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div><div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div><div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div><pre id="message"></pre><p id="feedback" class="feedback"></p></section>
