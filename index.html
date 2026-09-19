@@ -7,47 +7,171 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header><button id="menuToggle" class="menu-toggle" aria-label="Apri menu">☰</button><div><h1>MANTRANQUILLI26/27</h1><p>Gestione fantacalcio</p></div><span id="connection">Connessione…</span></header>
-<div class="layout">
-<aside id="sidebar" class="sidebar">
-  <div class="side-title">MENU</div>
-  <button class="nav-item active" data-section="home">🏠 <span>Home</span></button>
-  <button class="nav-item" data-section="rose">👥 <span>Rose</span></button>
-  <button class="nav-item" data-section="calendario">📅 <span>Calendario</span></button>
-  <button class="nav-item" data-section="classifica">🏆 <span>Classifica</span></button>
-  <button class="nav-item" data-section="scambi">🔄 <span>Scambi</span></button>
-  <button class="nav-item" data-section="mercato">💰 <span>Mercato</span></button>
-  <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
-  <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
-</aside>
+<header><div><h1>MANTRANQUILLI26/27</h1><p>Gestione scambi fantacalcio</p></div><span id="connection">Connessione…</span></header>
 <main>
-<section id="section-home" class="page-section active-section">
-  <section class="card hero-card"><h2>Benvenuto in MANTRANQUILLI26/27</h2><p>Usa il menu a sinistra per accedere alle sezioni della lega.</p><div class="home-grid"><div><strong>Squadre</strong><span id="homeTeams">Caricamento…</span></div><div><strong>Stato mercato</strong><span id="homeMarket">Caricamento…</span></div></div></section>
-  <section class="card"><h2>Proposte recenti</h2><div id="homeTrades">Caricamento…</div></section>
+<section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section>
+
+<section class="card"><h2>Rose delle squadre</h2>
+<div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div>
+<div id="rosterSummary" class="hint"></div>
+<div id="roster" class="roster-grid">Caricamento…</div>
 </section>
 
-<section id="section-rose" class="page-section">
-  <section class="card"><h2>Rose delle squadre</h2><div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div><div id="rosterSummary" class="hint"></div><div id="roster" class="roster-grid">Caricamento…</div></section>
+<section class="card"><h2>Proponi uno scambio</h2>
+<div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div>
+<div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div>
+<div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div>
+<pre id="message"></pre><p id="feedback" class="feedback"></p>
 </section>
-
-<section id="section-calendario" class="page-section">
-<section class="card"><h2>Calendario</h2><div class="calendar-tabs"><button class="calendar-tab active" data-cal="serie">Serie A</button><button class="calendar-tab" data-cal="champions">Champions League</button></div><div class="calendar-controls"><label>Giornata<select id="calendarRound"></select></label><div id="calendarRoundInfo" class="hint"></div></div><div id="calendarContent" class="calendar-content">Caricamento…</div></section>
-</section>
-
-<section id="section-classifica" class="page-section">
-<section class="card"><h2>Classifica Serie A</h2><p id="standingsInfo" class="hint"></p><div class="table-wrap"><table id="standingsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Serie A.</p></section>
-<section class="card"><h2>Classifica Champions League</h2><p id="champStandingsInfo" class="hint"></p><div class="champ-standings-grid"><div><h3>Girone A</h3><div class="table-wrap"><table id="champStandingsA"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div><div><h3>Girone B</h3><div class="table-wrap"><table id="champStandingsB"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Champions League.</p></section>
-</section>
-
-<section id="section-scambi" class="page-section">
-<section class="card"><h2>Proponi uno scambio</h2><div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div><div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div><div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div><pre id="message"></pre><p id="feedback" class="feedback"></p></section>
 <section class="card"><h2>Proposte recenti</h2><div id="trades">Caricamento…</div></section>
+
+<section class="card regulation-card">
+<h2>📖 Regolamento MANTRANQUILLI 26/27</h2>
+<p class="hint">Regolamento ufficiale della lega, in vigore dalle ore 16:00 del 19 agosto 2026.</p>
+
+<details open><summary>1. Asta e iscrizione</summary>
+<ul>
+<li>10 squadre partecipanti.</li>
+<li>Quota d'iscrizione: 150 € (75 € entro il 31 ottobre + 75 € entro il 28 febbraio).</li>
+<li>Asta pre-campionato: Random Totale, giro completo, poi asta a chiamata.</li>
+<li>Prima asta: 19 agosto ore 15:45, con tolleranza massima di 15 minuti. Dalle 16:00, per i ritardatari, budget disponibile 250 FM invece di 300 FM, qualunque sia la causa.</li>
+<li>Redazione voti: Fantacalcio con presenza di voti LIVE.</li>
+<li>Numero aste: 3. Se il timer termina per un giocatore e il partecipante non può rilanciare ma comunica immediatamente l'accaduto, l'asta viene riaperta.</li>
+</ul></details>
+
+<details><summary>2. Asta di agosto</summary>
+<ul>
+<li>Budget iniziale: 300 FM.</li><li>Base d'asta: 1 FM.</li>
+<li>Non si può svincolare un giocatore preso nella stessa sessione.</li><li>Non si possono effettuare scambi durante l'asta.</li><li>I crediti avanzati possono essere usati nelle aste successive.</li>
+</ul></details>
+
+<details><summary>3. Aste riparative</summary>
+<ul>
+<li>Seconda asta: settembre, data da concordare tramite sondaggio.</li>
+<li>Terza asta: febbraio, dopo il mercato invernale, data da concordare tramite sondaggio.</li>
+<li>Budget supplementare: 100 FM aggiunti ai crediti rimasti dopo l'asta di agosto.</li>
+<li>In febbraio sono disponibili solo i crediti avanzati dalle prime due aste più quelli recuperati dagli svincoli.</li>
+<li>12 svincoli complessivi per allenatore. Prima di ogni asta viene creato un mercato “Svincoli al buio”. Il calciatore svincolato restituisce il 50% dei crediti spesi, arrotondato per eccesso.</li>
+<li>Giocatore con asterisco (*): recupero del 100% dei crediti spesi nell'asta riparativa successiva; non conta nei 12 svincoli.</li>
+<li>Mercato a gettone: 3 gettoni per allenatore, costo 3 crediti ciascuno. Ogni gettone consente il prestito per una sola giornata di un calciatore dalla lista svincolati; al termine torna automaticamente svincolato.</li>
+<li>Asta a chiamata libera totale: a turno ogni allenatore può chiamare qualsiasi giocatore.</li>
+<li>Gli svincoli vengono effettuati prima dell'asta per determinare il nuovo budget.</li>
+<li>Non si può partecipare all'asta con gli slot pieni, né riacquistare o richiamare nella stessa asta un giocatore svincolato. Non si può svincolare un giocatore acquistato nella sessione e non si possono effettuare scambi durante l'asta.</li>
+<li>In caso di sforamento dei crediti si perde il calciatore più pagato in quella sessione, recuperando i crediti spesi, e si apre una nuova asta per quel giocatore.</li>
+</ul></details>
+
+<details><summary>4. Mercato scambi</summary>
+<ul>
+<li>Mercato aperto per tutto agosto, durante le pause nazionali e nei 7 giorni successivi alle aste riparative.</li>
+<li>Chiusura alle ore 24:00 del giorno precedente la ripresa della Serie A.</li>
+<li>Massimo 5 giocatori scambiabili per ogni sessione di mercato.</li>
+<li>Sono ammessi scambi dispari (es. 2 giocatori contro 1), ma dopo ogni scambio la rosa deve avere almeno 25 e non più di 30 giocatori.</li>
+</ul></details>
+
+<details><summary>5. Cambio gratuito per infortunio a stagione finita</summary>
+<ul>
+<li>1 cambio gratuito per squadra dopo l'asta riparativa di febbraio, valido al massimo fino alla 30ª giornata di Serie A.</li>
+<li>Il sostituto deve avere quotazione attuale uguale o inferiore al giocatore perso e deve ricoprire lo stesso ruolo.</li>
+<li>Il cambio può essere effettuato dalla lista completa degli svincolati, compresi i nuovi arrivi, entro 7 giorni dalla notizia di stagione finita.</li>
+<li>Il cambio non viene conteggiato negli svincoli disponibili.</li>
+<li>In caso di più allenatori interessati allo stesso giocatore, la priorità è determinata dalla quotazione attuale; a parità, si procede con asta a rilancio tra gli interessati.</li>
+<li>Il COVID del giocatore contagiato equivale a infortunio.</li>
+</ul></details>
+
+<details><summary>6. Rinvio partite</summary>
+<ul>
+<li>Se vengono rinviate 3 partite o meno e il recupero supera le 72 ore dalla data prevista, si applica il 6 politico.</li>
+<li>Se le partite rinviate nella stessa giornata sono 4 o più, si attende il recupero delle singole partite.</li>
+<li>Per partite sospese dopo almeno 1 minuto di gioco, si attende il recupero dei voti.</li>
+</ul></details>
+
+<details><summary>7. Rose, riconferme e formazione</summary>
+<ul>
+<li>Rosa minima 25 e massima 30 giocatori, con almeno 2 portieri.</li>
+<li>Riconferme 26/27: possibilità di confermare 2 giocatori per la stagione successiva allo stesso prezzo d'acquisto. Il costo viene scalato dal budget di agosto 2027.</li>
+<li>Un giocatore può essere riconfermato per massimo 2 anni; dal terzo torna disponibile all'asta. Il portiere non può essere riconfermato.</li>
+<li>Ogni allenatore può confermare 0, 1 o 2 giocatori e deve comunicarli entro 3 giorni dall'asta 2027/28. Se non comunica nulla entro le 72 ore precedenti la nuova asta, parte senza riconferme e con il budget iniziale al 100%.</li>
+<li>La formazione va consegnata fino a 0 minuti prima dell'inizio della prima partita della giornata.</li>
+<li>Formazione invisibile: sì, a scelta del fantallenatore.</li>
+<li>Se la formazione non può essere inviata sull'app Fantacalcio, va comunicata sul gruppo WhatsApp entro l'inizio della prima partita; gli admin possono inserirla manualmente.</li>
+</ul></details>
+
+<details><summary>8. Multa per formazione non schierata</summary>
+<ul>
+<li>Prima dimenticanza: richiamo verbale senza multa.</li>
+<li>Seconda: 5 € e -1 punto in classifica in tutte le competizioni.</li>
+<li>Terza e successive: 5 € e -2 punti in classifica in tutte le competizioni.</li>
+<li>Il sistema recupera la formazione della giornata precedente quando un allenatore dimentica di schierare la squadra.</li>
+<li>Per Champions/Europa League, se il sistema non può recuperare la formazione precedente, gli admin inseriscono manualmente l'ultima formazione di campionato e applicano multa e/o penalità previste.</li>
+</ul></details>
+
+<details><summary>9. Bonus, malus e capitano</summary>
+<ul>
+<li>POTM (Player of the Match): il giocatore eletto dalla redazione porta +1.</li>
+<li>Capitano o vice in caso di SV: bonus/malus in base al voto, senza raddoppiare o dimezzare gli altri bonus.</li>
+<li>Voto 5 o inferiore: -1; 5,5: -0,5; 6: 0; 6,5: +0,5; 7 o superiore: +1.</li>
+</ul></details>
+
+<details><summary>10. Schieramento e sostituzioni Mantra</summary>
+<ul>
+<li>Panchina composta da 12 calciatori, di cui almeno un portiere, in ordine di preferenza assoluta.</li>
+<li>In Mantra l'ordine della panchina governa i meccanismi delle sostituzioni; non va ordinata come in Classic (PDCA).</li>
+<li>Sostituzioni permesse: 5, con modalità MASTER.</li>
+<li>Switch PLUS abilitato: massimo 1 switch a partita, non conteggiato nelle 5 sostituzioni. Può coinvolgere anche ruoli diversi e modificare il modulo.</li>
+<li>Il portiere titolare assente viene sostituito per primo; il subentro del portiere di riserva riduce di una unità le sostituzioni disponibili.</li>
+<li>In modalità MASTER il sistema cerca prima soluzioni ottimali/efficienti senza malus, poi soluzioni adattate con eventuali malus. L'ordine della panchina determina la priorità tra combinazioni dello stesso livello.</li>
+<li>Ogni giocatore schierato fuori posizione comporta un malus di -1.</li>
+<li>In fase di inserimento formazione sono vietati: Dd/Ds in Dc; Dd in Ds e viceversa; E in M (resta possibile M/C); M in E (resta possibile E/W); W in T (resta possibile T/A).</li>
+</ul></details>
+
+<details><summary>11. D-Factor</summary>
+<ul>
+<li>Il D-Factor assegna bonus in base alla media voto del pacchetto difensivo.</li>
+<li>La lega adotta la versione 5+1 con aggiunta del portiere: la media viene calcolata su 6 giocatori totali.</li>
+<li>Se non si raggiunge il numero necessario di calciatori, il D-Factor non si attiva.</li>
+</ul></details>
+
+<details><summary>12. Campionato e Playoff</summary>
+<ul>
+<li>I premi per 1°, 2° e 3° classificato vengono assegnati dopo la 38ª giornata.</li>
+<li>Alla 31ª giornata le prime 8 accedono ai playoff, competizione parallela che prosegue fino alla 36ª giornata.</li>
+<li>Quarti: andata 32ª, ritorno 33ª. Abbinamenti: 1ª-8ª, 2ª-7ª, 3ª-6ª, 4ª-5ª.</li>
+<li>Semifinali: andata 34ª, ritorno 35ª. Finale secca alla 36ª.</li>
+</ul></details>
+
+<details><summary>13. Champions League</summary>
+<ul>
+<li>2 gironi da 5 squadre.</li>
+<li>Una giornata di Champions ogni 3 giornate di campionato.</li>
+<li>Passano il girone la 1ª e la 2ª classificata di ciascun girone, che disputano le semifinali.</li>
+<li>La 3ª e la 4ª classificata di ogni girone finiscono in Europa League e disputano le semifinali di quella competizione.</li>
+<li>Inizio alla 1ª giornata di campionato; finale alla 34ª giornata di Serie A.</li>
+<li>In caso di pareggio dopo le semifinali o dopo la finale secca, il passaggio del turno o la vittoria vengono decisi con supplementari e rigori secondo la regola adottata dalla lega.</li>
+</ul></details>
+
+<details><summary>14. Europa League e Supercoppa Europea</summary>
+<ul>
+<li>Europa League: 3ª del Girone A contro 4ª del Girone B; 3ª del Girone B contro 4ª del Girone A.</li>
+<li>Semifinali di entrambe le coppe: andata alla 30ª giornata, ritorno alla 32ª.</li>
+<li>Finali di entrambe le coppe alla 34ª giornata di Serie A.</li>
+<li>Supercoppa Europea: finale secca alla 1ª giornata della stagione successiva tra la vincente Champions e la vincente Europa League.</li>
+</ul></details>
+
+<details><summary>15. Premi</summary>
+<ul>
+<li>1° classificato: 475 €.</li><li>2° classificato: 300 €.</li><li>3° classificato: 150 €.</li>
+<li>Champions League: 175 €.</li><li>Europa League: 75 €.</li><li>Vincente Playoff: 150 €.</li><li>Supercoppa: 75 € (scontati dalla quota annuale dopo la 1ª giornata).</li>
+<li>Premio Sfiga: 50 € alla squadra con più gol subiti a fine 38ª giornata; in caso di parità la quota viene divisa.</li>
+</ul></details>
+
+<details><summary>16. Disposizioni finali</summary>
+<ul>
+<li>Il regolamento è ufficiale dalle ore 16:00 del 19 agosto 2026 e dopo tale data non è più modificabile.</li>
+<li>In caso di imprevisti durante l'anno, gli admin possono proporre sondaggi per risolvere eventuali controversie; decide l'intera lega con un voto per squadra.</li>
+<li>Le squadre formate da coppie di fantallenatori esprimono un solo voto.</li>
+</ul></details>
 </section>
 
-<section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
-
-<section id="section-statistiche" class="page-section"><section class="card empty-card"><div class="big-icon">📊</div><h2>Statistiche</h2><p>Statistiche della lega in arrivo.</p><p class="hint">Qui potremo mostrare presenze, gol, assist e altre statistiche.</p></section></section>
-<section id="section-regolamento" class="page-section"><section class="card empty-card"><div class="big-icon">📖</div><h2>Regolamento</h2><p>Il regolamento della MANTRANQUILLI26/27 sarà disponibile qui.</p></section></section>
-</main></div>
+</main>
 <script src="app.js"></script>
 </body></html>
