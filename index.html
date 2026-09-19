@@ -7,25 +7,47 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<header><div><h1>MANTRANQUILLI26/27</h1><p>Gestione scambi fantacalcio</p></div><span id="connection">Connessione…</span></header>
+<header><button id="menuToggle" class="menu-toggle" aria-label="Apri menu">☰</button><div><h1>MANTRANQUILLI26/27</h1><p>Gestione fantacalcio</p></div><span id="connection">Connessione…</span></header>
+<div class="layout">
+<aside id="sidebar" class="sidebar">
+  <div class="side-title">MENU</div>
+  <button class="nav-item active" data-section="home">🏠 <span>Home</span></button>
+  <button class="nav-item" data-section="rose">👥 <span>Rose</span></button>
+  <button class="nav-item" data-section="calendario">📅 <span>Calendario</span></button>
+  <button class="nav-item" data-section="classifica">🏆 <span>Classifica</span></button>
+  <button class="nav-item" data-section="scambi">🔄 <span>Scambi</span></button>
+  <button class="nav-item" data-section="mercato">💰 <span>Mercato</span></button>
+  <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
+  <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
+</aside>
 <main>
-<section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section>
-
-<section class="card"><h2>Rose delle squadre</h2>
-<div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div>
-<div id="rosterSummary" class="hint"></div>
-<div id="roster" class="roster-grid">Caricamento…</div>
+<section id="section-home" class="page-section active-section">
+  <section class="card hero-card"><h2>Benvenuto in MANTRANQUILLI26/27</h2><p>Usa il menu a sinistra per accedere alle sezioni della lega.</p><div class="home-grid"><div><strong>Squadre</strong><span id="homeTeams">Caricamento…</span></div><div><strong>Stato mercato</strong><span id="homeMarket">Caricamento…</span></div></div></section>
+  <section class="card"><h2>Proposte recenti</h2><div id="homeTrades">Caricamento…</div></section>
 </section>
 
-<section class="card"><h2>Proponi uno scambio</h2>
-<div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div>
-<div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div>
-<div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div>
-<pre id="message"></pre><p id="feedback" class="feedback"></p>
+<section id="section-rose" class="page-section">
+  <section class="card"><h2>Rose delle squadre</h2><div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div><div id="rosterSummary" class="hint"></div><div id="roster" class="roster-grid">Caricamento…</div></section>
 </section>
+
+<section id="section-calendario" class="page-section">
+<section class="card"><h2>Calendario</h2><div class="calendar-tabs"><button class="calendar-tab active" data-cal="serie">Serie A</button><button class="calendar-tab" data-cal="champions">Champions League</button></div><div class="calendar-controls"><label>Giornata<select id="calendarRound"></select></label><div id="calendarRoundInfo" class="hint"></div></div><div id="calendarContent" class="calendar-content">Caricamento…</div></section>
+</section>
+
+<section id="section-classifica" class="page-section">
+<section class="card"><h2>Classifica Serie A</h2><p id="standingsInfo" class="hint"></p><div class="table-wrap"><table id="standingsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Serie A.</p></section>
+<section class="card"><h2>Classifica Champions League</h2><p id="champStandingsInfo" class="hint"></p><div class="champ-standings-grid"><div><h3>Girone A</h3><div class="table-wrap"><table id="champStandingsA"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div><div><h3>Girone B</h3><div class="table-wrap"><table id="champStandingsB"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Champions League.</p></section>
+</section>
+
+<section id="section-scambi" class="page-section">
+<section class="card"><h2>Proponi uno scambio</h2><div class="grid"><label>Squadra A<select id="teamA"></select></label><label>Squadra B<select id="teamB"></select></label></div><div class="grid"><label>Giocatori ceduti da A<select id="playersA" multiple size="10"></select></label><label>Giocatori ceduti da B<select id="playersB" multiple size="10"></select></label></div><div class="actions"><button id="prepare">Prepara messaggio WhatsApp</button><button class="secondary" id="saveTrade">Registra proposta</button></div><pre id="message"></pre><p id="feedback" class="feedback"></p></section>
 <section class="card"><h2>Proposte recenti</h2><div id="trades">Caricamento…</div></section>
+</section>
 
-<section class="card regulation-card">
+<section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
+
+<section id="section-statistiche" class="page-section"><section class="card empty-card"><div class="big-icon">📊</div><h2>Statistiche</h2><p>Statistiche della lega in arrivo.</p><p class="hint">Qui potremo mostrare presenze, gol, assist e altre statistiche.</p></section></section>
+<section id="section-regolamento" class="page-section"><section class="card regulation-card">
 <h2>📖 Regolamento MANTRANQUILLI 26/27</h2>
 <p class="hint">Regolamento ufficiale della lega, in vigore dalle ore 16:00 del 19 agosto 2026.</p>
 
@@ -170,8 +192,7 @@
 <li>In caso di imprevisti durante l'anno, gli admin possono proporre sondaggi per risolvere eventuali controversie; decide l'intera lega con un voto per squadra.</li>
 <li>Le squadre formate da coppie di fantallenatori esprimono un solo voto.</li>
 </ul></details>
-</section>
-
-</main>
+</section></section>
+</main></div>
 <script src="app.js"></script>
 </body></html>
