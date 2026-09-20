@@ -88,7 +88,7 @@ async function initAuth(){
     closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
   };
 
-  db.auth.onAuthStateChange(()=>{setTimeout(()=>refreshAuth(),0);});
+  db.auth.onAuthStateChange(async()=>{await refreshAuth();});
   await refreshAuth();
 }
 async function loadRegisterTeams(){
@@ -178,21 +178,8 @@ function renderMarket(){$('marketStatus').textContent=marketOpen?'APERTO':'CHIUS
 $('toggleMarket').onclick=async()=>{if(!currentUser)return openAuth('login');if(!currentProfile?.is_admin)return show('Solo un ADMIN può aprire o chiudere il mercato.',true);marketOpen=!marketOpen;renderMarket();const r=await db.from('market_sessions').insert({name:'Mercato 1',is_open:marketOpen,max_players_per_team:5});if(r.error){marketOpen=!marketOpen;renderMarket();show(r.error.message,true)}};
 function selected(id){return [...$(id).selectedOptions].map(o=>({id:o.value,name:o.textContent}))}
 function validate(){const a=$('teamA').value,b=$('teamB').value,x=selected('playersA'),y=selected('playersB');if(!marketOpen)return 'Il mercato è chiuso.';if(a===b)return 'Scegli due squadre diverse.';if(!x.length||x.length!==y.length||x.length>5)return 'Seleziona da 1 a 5 giocatori per parte, con lo stesso numero.';return null}
-function buildMessage(){const x=selected('playersA'),y=selected('playersB');return `🔄 SCAMBIO CONCLUSO\n📅 ${new Date().toLocaleDateString('it-IT')}\n\n👥 SQUADRE COINVOLTE\n• ${$('teamA').selectedOptions[0].text}\n• ${$('teamB').selectedOptions[0].text}\n\n➡️ ${$('teamA').selectedOptions[0].text} cede:\n${x.map(v=>`• ${v.name}`).join('\n')}\n\n⬅️ ${$('teamB').selectedOptions[0].text} cede:\n${y.map(v=>`• ${v.name}`).join('\n')}\n\n🤝 Scambio accettato da entrambi gli allenatori.`}
+function buildMessage(){const x=selected('playersA'),y=selected('playersB');return `🔄 MANTRANQUILLI26/27\n${$('teamA').selectedOptions[0].text} cede: ${x.map(v=>v.name).join(', ')}\n${$('teamB').selectedOptions[0].text} cede: ${y.map(v=>v.name).join(', ')}`}
 $('prepare').onclick=()=>{const e=validate();if(e)return show(e,true);const text=buildMessage();$('message').textContent=text;window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');show('Messaggio pronto per WhatsApp.',false)};
-async function openConfirmedTradeWhatsApp(id){
- const t=await db.from('trades').select('id,created_at,team_a_id,team_b_id,teams_a:team_a_id(name),teams_b:team_b_id(name)').eq('id',id).maybeSingle();
- if(t.error||!t.data)return;
- const tp=await db.from('trade_players').select('player_id,direction,players:player_id(name)').eq('trade_id',id);
- if(tp.error)return;
- const a=t.data.teams_a?.name||'Squadra A', b=t.data.teams_b?.name||'Squadra B';
- const cededA=tp.data.filter(x=>x.direction==='ceded').map(x=>x.players?.name).filter(Boolean);
- const cededB=tp.data.filter(x=>x.direction==='acquired').map(x=>x.players?.name).filter(Boolean);
- const date=new Date(t.data.created_at).toLocaleDateString('it-IT');
- const text=`🔄 SCAMBIO CONCLUSO\n📅 ${date}\n\n👥 SQUADRE COINVOLTE\n• ${a}\n• ${b}\n\n➡️ ${a} cede:\n${cededA.map(n=>`• ${n}`).join('\n')}\n\n⬅️ ${b} cede:\n${cededB.map(n=>`• ${n}`).join('\n')}\n\n🤝 Scambio accettato da entrambi gli allenatori.`;
- $('message').textContent=text;
- window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
-}
 $('saveTrade').onclick=async()=>{if(!currentUser)return openAuth('login');const e=validate();if(e)return show(e,true);const x=selected('playersA'),y=selected('playersB');const r=await db.from('trades').insert({team_a_id:$('teamA').value,team_b_id:$('teamB').value,status:'pending'}).select('id').single();if(r.error)return show(r.error.message,true);const rows=[...x.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'ceded'})),...y.map(v=>({trade_id:r.data.id,player_id:v.id,direction:'acquired'}))];const q=await db.from('trade_players').insert(rows);if(q.error)return show(q.error.message,true);show('Proposta registrata.',false);await loadTrades()};
 
 async function confirmTrade(id){
@@ -203,8 +190,6 @@ async function confirmTrade(id){
  const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(!p.error){players=p.data;fill();renderRoster();}
  await loadTrades();
- await loadAdminPanel();
- await openConfirmedTradeWhatsApp(id);
 }
 async function loadTrades(){
  const r=await db.from('trades').select('id,status,created_at,team_a_id,team_b_id,teams_a:team_a_id(name),teams_b:team_b_id(name)').order('created_at',{ascending:false}).limit(20);
