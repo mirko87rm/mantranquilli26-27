@@ -25,8 +25,8 @@
     <button id="closeAuth" class="auth-close" aria-label="Chiudi">×</button>
     <div id="loginForm">
       <h2>Accedi</h2>
-      <p class="hint">Inserisci username e password.</p>
-      <label>Username<input id="loginUsername" autocomplete="username" maxlength="30"></label>
+      <p class="hint">Inserisci email e password.</p>
+      <label>Email<input id="loginEmail" type="email" autocomplete="email" inputmode="email" placeholder="nome@email.it"></label>
       <label>Password<input id="loginPassword" type="password" autocomplete="current-password"></label>
       <button id="loginBtn">Accedi</button>
       <p id="loginFeedback" class="feedback"></p>
@@ -34,8 +34,9 @@
     </div>
     <div id="registerForm" class="hidden">
       <h2>Registrazione</h2>
-      <p class="hint">Scegli username, password e la tua squadra. Ogni squadra può essere assegnata a un solo account.</p>
+      <p class="hint">Scegli username, email, password e la tua squadra. Ogni squadra può essere assegnata a un solo account.</p>
       <label>Username<input id="registerUsername" autocomplete="username" maxlength="30" placeholder="es. Mirko87"></label>
+      <label>Email<input id="registerEmail" type="email" autocomplete="email" inputmode="email" placeholder="nome@email.it"></label>
       <label>Password<input id="registerPassword" type="password" autocomplete="new-password" minlength="6"></label>
       <label>Conferma password<input id="registerPassword2" type="password" autocomplete="new-password" minlength="6"></label>
       <label>Squadra<select id="registerTeam"><option value="">Seleziona la squadra…</option></select></label>

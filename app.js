@@ -32,27 +32,46 @@ async function refreshAuth(){
 }
 async function initAuth(){
   $('closeAuth').onclick=closeAuth;
-  $('switchRegister').onclick=()=>openAuth('register');$('switchLogin').onclick=()=>openAuth('login');
+  $('switchRegister').onclick=()=>openAuth('register');
+  $('switchLogin').onclick=()=>openAuth('login');
+
   $('loginBtn').onclick=async()=>{
-    const username=$('loginUsername').value.trim().toLowerCase(), password=$('loginPassword').value;
-    if(!username||!password)return authMessage($('loginFeedback'),'Inserisci username e password.',true);
-    const email=`${username}@mantranquilli26-27.com`;
+    const email=$('loginEmail').value.trim().toLowerCase();
+    const password=$('loginPassword').value;
+    if(!email||!password)return authMessage($('loginFeedback'),'Inserisci email e password.',true);
     const r=await db.auth.signInWithPassword({email,password});
-    if(r.error)return authMessage($('loginFeedback'),'Username o password non corretti.',true);
+    if(r.error)return authMessage($('loginFeedback'),'Email o password non corretti.',true);
     closeAuth();await refreshAuth();show('Accesso effettuato.',false);
   };
+
   $('registerBtn').onclick=async()=>{
-    const username=$('registerUsername').value.trim().toLowerCase(), password=$('registerPassword').value, password2=$('registerPassword2').value, teamId=$('registerTeam').value;
+    const username=$('registerUsername').value.trim().toLowerCase();
+    const email=$('registerEmail').value.trim().toLowerCase();
+    const password=$('registerPassword').value;
+    const password2=$('registerPassword2').value;
+    const teamId=$('registerTeam').value;
     if(!/^[a-z0-9_-]{3,30}$/.test(username))return authMessage($('registerFeedback'),'Username: 3-30 caratteri, solo lettere, numeri, _ o -.',true);
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage($('registerFeedback'),'Inserisci un indirizzo email valido.',true);
     if(password.length<6)return authMessage($('registerFeedback'),'La password deve avere almeno 6 caratteri.',true);
     if(password!==password2)return authMessage($('registerFeedback'),'Le password non coincidono.',true);
     if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
-    const email=`${username}@mantranquilli26-27.com`;
+
+    const taken=await db.from('manager_profiles').select('team_id').eq('team_id',teamId).maybeSingle();
+    if(taken.data)return authMessage($('registerFeedback'),'Questa squadra è già stata assegnata a un altro account.',true);
+
     const r=await db.auth.signUp({email,password,options:{data:{username,team_id:teamId}}});
-    if(r.error)return authMessage($('registerFeedback'),r.error.message,true);
-    if(!r.data.session)return authMessage($('registerFeedback'),'Account creato. Se la conferma email è attiva in Supabase, va disattivata per questo sistema senza email.',false);
+    if(r.error){
+      const msg=r.error.message||'';
+      if(/already registered|already exists/i.test(msg))return authMessage($('registerFeedback'),'Questa email è già registrata.',true);
+      if(/username/i.test(msg)&&/unique|duplicate|already/i.test(msg))return authMessage($('registerFeedback'),'Questo username è già utilizzato.',true);
+      return authMessage($('registerFeedback'),msg,true);
+    }
+    if(!r.data.session){
+      return authMessage($('registerFeedback'),'Account creato. Controlla la tua email e clicca sul link di conferma, poi torna qui per accedere.',false);
+    }
     closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
   };
+
   db.auth.onAuthStateChange(async()=>{await refreshAuth();});
   await refreshAuth();
 }
