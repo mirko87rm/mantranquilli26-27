@@ -44,7 +44,3 @@ main{flex:1;max-width:none;margin:25px auto;padding:0 24px;width:100%}
 @media(max-width:700px){#authArea{gap:4px}.auth-btn{padding:7px 8px;font-size:12px}header{gap:8px}.auth-user span{display:none}}
 
 .admin-hero{background:linear-gradient(135deg,#111,#2d2d2d);color:#fff}.admin-hero p{color:#ccc}.admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.admin-grid>div{background:#ffffff12;border:1px solid #ffffff1c;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:6px}.admin-grid span{font-size:20px;font-weight:800}.admin-table{width:100%;border-collapse:collapse}.admin-table td,.admin-table th{padding:10px;border-bottom:1px solid #eee;text-align:left}.admin-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eee;font-size:12px;font-weight:800}.admin-badge.ok{background:#dcfce7;color:#166534}.admin-badge.wait{background:#fef3c7;color:#92400e}.admin-actions{display:flex;gap:6px;flex-wrap:wrap}@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}
-.market-schedule{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:14px;margin:14px 0}
-.market-schedule label{display:block;font-weight:700;margin-bottom:6px}
-.market-schedule input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #d5d9e2;border-radius:10px;background:#fff;color:#1f2937}
-@media(max-width:700px){.market-schedule{grid-template-columns:1fr}}
