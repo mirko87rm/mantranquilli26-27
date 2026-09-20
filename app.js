@@ -218,7 +218,7 @@ async function rejectTrade(id){
   if(r.error)return show(r.error.message,true);
   show('Scambio rifiutato.',false); await loadTrades(); await loadAdminPanel();
 }
-$('adminToggleMarket').onclick=async()=>{
+if($('adminToggleMarket')) $('adminToggleMarket').onclick=async()=>{
   if(!currentProfile?.is_admin)return;
   marketOpen=!marketOpen; renderMarket();
   const r=await db.from('market_sessions').insert({name:'Mercato 1',is_open:marketOpen,max_players_per_team:5});
