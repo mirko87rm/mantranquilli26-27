@@ -19,6 +19,7 @@
   <button class="nav-item" data-section="mercato">💰 <span>Mercato</span></button>
   <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
   <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
+  <button id="adminNav" class="nav-item hidden" data-section="admin">👑 <span>ADMIN</span></button>
 </aside>
 <div id="authModal" class="auth-modal hidden">
   <div class="auth-box">
@@ -80,6 +81,14 @@
 <div class="table-wrap"><table id="statsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th><th>Media GF</th></tr></thead><tbody></tbody></table></div>
 <p class="hint stats-note">Le statistiche sono calcolate automaticamente dai risultati inseriti nei calendari. Le statistiche individuali dei giocatori (gol, assist, presenze) saranno disponibili quando verranno inseriti i dati dei singoli calciatori.</p>
 </section></section>
+<section id="section-admin" class="page-section">
+<section class="card admin-hero"><h2>👑 Pannello ADMIN</h2><p>Area riservata agli amministratori della lega.</p><div class="admin-grid"><div><strong>Manager registrati</strong><span id="adminManagerCount">—</span></div><div><strong>Scambi in attesa</strong><span id="adminPendingCount">—</span></div><div><strong>Mercato</strong><span id="adminMarketStatus">—</span></div></div></section>
+<section class="card"><h2>👥 Manager</h2><div id="adminManagers">Caricamento…</div></section>
+<section class="card"><h2>🔄 Gestione scambi</h2><div id="adminTrades">Caricamento…</div></section>
+<section class="card"><h2>💰 Gestione mercato</h2><div class="market"><strong id="adminMarketLabel">—</strong><button id="adminToggleMarket">Apri/chiudi mercato</button></div><p id="adminFeedback" class="feedback"></p></section>
+<section class="card"><h2>⚙️ Impostazioni</h2><p class="hint">Qui aggiungeremo progressivamente rose, calendario, risultati, formazioni, crediti, aste e altre funzioni amministrative.</p></section>
+</section>
+
 <section id="section-regolamento" class="page-section"><section class="card regulation-card">
 <h2>📖 Regolamento MANTRANQUILLI 26/27</h2>
 <p class="hint">Regolamento ufficiale della lega, in vigore dalle ore 16:00 del 19 agosto 2026.</p>
