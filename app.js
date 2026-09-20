@@ -30,6 +30,8 @@ async function refreshAuth(){
   }
   setAuthUI();
   updateAdminUI();
+  renderTradeTeams();
+  fill();
   if(currentProfile?.is_admin)loadAdminPanel();
 }
 function updateAdminUI(){
@@ -125,11 +127,29 @@ async function load(){
  const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
  teams=t.data;players=p.data;$('connection').textContent='Database collegato';await loadRegisterTeams();
- teams.forEach(x=>{ $('teamA').add(new Option(x.name,x.id));$('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
+ teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
+ renderTradeTeams();
  $('homeTeams').textContent=teams.length+' squadre';
- if(teams.length>1)$('teamB').selectedIndex=1;
  if(teams.length)$('rosterTeam').selectedIndex=0;
  fill();renderRoster();renderStandings();await loadMarket();await loadTrades();await loadAdminPanel();
+}
+function renderTradeTeams(){
+ const a=$('teamA'), b=$('teamB'); if(!a||!b)return;
+ const myTeamId=currentProfile?.team_id||'';
+ a.innerHTML=''; b.innerHTML='';
+ if(myTeamId){
+   const mine=teams.find(t=>String(t.id)===String(myTeamId));
+   if(mine)a.add(new Option(mine.name,mine.id));
+   a.disabled=true;
+   const opponents=teams.filter(t=>String(t.id)!==String(myTeamId));
+   b.innerHTML='<option value="">Seleziona la squadra con cui scambiare…</option>'+opponents.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');
+   b.disabled=false;
+   if(opponents.length)b.selectedIndex=0;
+ }else{
+   a.innerHTML='<option value="">Accedi per vedere la tua squadra</option>';
+   b.innerHTML='<option value="">Accedi per scegliere la squadra</option>';
+   a.disabled=true;b.disabled=true;
+ }
 }
 function fill(){
  for(const id of ['playersA','playersB'])$(id).innerHTML='';
