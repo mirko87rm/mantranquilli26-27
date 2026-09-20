@@ -19,6 +19,7 @@
   <button class="nav-item" data-section="mercato">💰 <span>Mercato</span></button>
   <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
   <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
+  <button id="adminNav" class="nav-item" data-section="admin">⚙️ <span>ADMIN</span></button>
 </aside>
 <div id="authModal" class="auth-modal hidden">
   <div class="auth-box">
@@ -48,7 +49,50 @@
 </div>
 
 <main>
-<section id="section-home" class="page-section active-section">
+<section id="section-admin" class="page-section">
+  <section class="card">
+    <h2>⚙️ ADMIN</h2>
+
+    <div class="admin-stats">
+      <div class="card">
+        <h3>Manager registrati</h3>
+        <strong id="adminManagerCount">0</strong>
+      </div>
+
+      <div class="card">
+        <h3>Scambi in attesa</h3>
+        <strong id="adminPendingCount">0</strong>
+      </div>
+
+      <div class="card">
+        <h3>Mercato</h3>
+        <strong id="adminMarketStatus">CHIUSO</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>👥 Manager registrati</h2>
+    <div id="adminManagers">Caricamento...</div>
+  </section>
+
+  <section class="card">
+    <h2>🔄 Gestione scambi</h2>
+    <div id="adminTrades">Caricamento...</div>
+  </section>
+
+  <section class="card">
+    <h2>💰 Gestione mercato</h2>
+    <p id="adminMarketLabel">MERCATO CHIUSO</p>
+    <button id="adminToggleMarket">Apri/chiudi mercato</button>
+    <p id="adminFeedback" class="feedback"></p>
+  </section>
+
+  <section class="card">
+    <h2>⚙️ Impostazioni</h2>
+    <p class="hint">Impostazioni della lega disponibili prossimamente.</p>
+  </section>
+</section><section id="section-home" class="page-section active-section">
   <section class="card hero-card"><h2>Benvenuto in MANTRANQUILLI26/27</h2><p>Usa il menu a sinistra per accedere alle sezioni della lega.</p><div class="home-grid"><div><strong>Squadre</strong><span id="homeTeams">Caricamento…</span></div><div><strong>Stato mercato</strong><span id="homeMarket">Caricamento…</span></div></div></section>
   <section class="card"><h2>Proposte recenti</h2><div id="homeTrades">Caricamento…</div></section>
 </section>
