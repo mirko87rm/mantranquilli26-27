@@ -72,7 +72,7 @@
 <section class="card"><h2>Proposte recenti</h2><div id="trades">Caricamento…</div></section>
 </section>
 
-<section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
+<section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong></div><p id="marketSchedule" class="hint"></p><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
 
 <section id="section-statistiche" class="page-section">
 <section class="card"><h2>📊 Statistiche</h2><p id="statsInfo" class="hint"></p>
@@ -85,7 +85,16 @@
 <section class="card admin-hero"><h2>👑 Pannello ADMIN</h2><p>Area riservata agli amministratori della lega.</p><div class="admin-grid"><div><strong>Manager registrati</strong><span id="adminManagerCount">—</span></div><div><strong>Scambi in attesa</strong><span id="adminPendingCount">—</span></div><div><strong>Mercato</strong><span id="adminMarketStatus">—</span></div></div></section>
 <section class="card"><h2>👥 Manager</h2><div id="adminManagers">Caricamento…</div></section>
 <section class="card"><h2>🔄 Gestione scambi</h2><div id="adminTrades">Caricamento…</div></section>
-<section class="card"><h2>💰 Gestione mercato</h2><div class="market"><strong id="adminMarketLabel">—</strong><button id="adminToggleMarket">Apri/chiudi mercato</button></div><p id="adminFeedback" class="feedback"></p></section>
+<section class="card"><h2>💰 Gestione mercato</h2>
+<div class="market"><strong id="adminMarketLabel">—</strong></div>
+<div class="market-schedule">
+  <div><label for="marketOpenAt">Apertura mercato</label><input id="marketOpenAt" type="datetime-local"></div>
+  <div><label for="marketCloseAt">Chiusura mercato</label><input id="marketCloseAt" type="datetime-local"></div>
+</div>
+<button id="saveMarketSchedule">Salva programmazione</button>
+<p id="adminMarketSchedule" class="hint"></p>
+<p id="adminFeedback" class="feedback"></p>
+</section>
 <section class="card"><h2>⚙️ Impostazioni</h2><p class="hint">Qui aggiungeremo progressivamente rose, calendario, risultati, formazioni, crediti, aste e altre funzioni amministrative.</p></section>
 </section>
 
