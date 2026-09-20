@@ -88,7 +88,9 @@ async function initAuth(){
     closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
   };
 
-  db.auth.onAuthStateChange(async()=>{await refreshAuth();});
+  // Evita deadlock di Supabase Auth: non eseguire getSession() direttamente
+  // dentro onAuthStateChange. Rimandiamo il refresh al ciclo successivo.
+  db.auth.onAuthStateChange(()=>{setTimeout(()=>refreshAuth(),0);});
   await refreshAuth();
 }
 async function loadRegisterTeams(){
