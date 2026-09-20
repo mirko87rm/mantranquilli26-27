@@ -88,7 +88,7 @@ async function initAuth(){
     closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
   };
 
-  db.auth.onAuthStateChange(async()=>{await refreshAuth();});
+  db.auth.onAuthStateChange(()=>{setTimeout(()=>refreshAuth(),0);});
   await refreshAuth();
 }
 async function loadRegisterTeams(){
