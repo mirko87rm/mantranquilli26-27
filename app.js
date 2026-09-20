@@ -1,6 +1,6 @@
 const SUPABASE_URL='https://wwuwmhqylkghdohhgrxo.supabase.co';
 const SUPABASE_KEY='sb_publishable_YP7r7R11fwdYYAloEBG5sQ_z8rvZ1RC';
-const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=id=>document.getElementById(id);let teams=[],players=[],marketOpen=false;
 
 let currentUser=null,currentProfile=null;
