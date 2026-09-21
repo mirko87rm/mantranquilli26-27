@@ -439,13 +439,13 @@ function renderCalendarRoundOptions(){
  $('calendarRound').innerHTML=rounds.map(r=>`<option value="${r.round}">Giornata ${r.round}</option>`).join('');
  renderCalendar();
 }
-function renderCalendar(){
- const rounds=CALENDARS[activeCalendar]||[];
- const n=Number($('calendarRound').value||rounds[0]?.round);
- const r=rounds.find(x=>x.round===n)||rounds[0];
- if(!r){$('calendarContent').innerHTML='<p class="hint">Calendario non disponibile.</p>';return}
- $('calendarRoundInfo').textContent=r.serie?`Corrisponde alla ${r.serie}.`:'';
- const grouped={};
+async function renderCalendar(){
+    const rounds=CALENDARS[activeCalendar]||[];
+    const mr=await db.from('match_results').select('round,home_team,away_team,score').eq('series',activeCalendar);
+    const saved={};
+    (mr.data||[]).forEach(x=>saved[`${x.home_team}|${x.away_team}`]=x.score);
+
+    const n=Number($('calendarRound').value||rounds[0]?.round);
  r.matches.forEach(m=>{const g=m.group||'A';(grouped[g]??=[]).push(m)});
  let html='';
  Object.keys(grouped).sort().forEach(g=>{
@@ -455,7 +455,7 @@ function renderCalendar(){
        html+=`<div class="calendar-bye">⏸️ Riposa <strong>${esc(m.bye)}</strong></div>`;
        return;
      }
-     const score=(m.score&&m.score!=='-')?m.score:'—';
+const score=saved[`${m.home}|${m.away}`]||((m.score&&m.score!=='-')?m.score:'-');
      const hasPts=(m.home_pts!==null&&m.home_pts!==undefined&&m.away_pts!==null&&m.away_pts!==undefined&&!(m.home_pts===0&&m.away_pts===0&&score==='—'));
      const points=hasPts?`<div class="fantasy-points">Punti: ${esc(m.home_pts)} — ${esc(m.away_pts)}</div>`:'';
      html+=`<div class="match-card"><div class="team-name">${esc(m.home)}</div><div class="match-score">${esc(score)}</div><div class="team-name team-away">${esc(m.away)}</div>${points}</div>`;
