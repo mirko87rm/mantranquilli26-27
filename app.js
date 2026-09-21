@@ -156,8 +156,8 @@ function renderTradeTeams(){
 function fill(){
  for(const id of ['playersA','playersB'])$(id).innerHTML='';
  const a=$('teamA').value,b=$('teamB').value;
- players.filter(p=>String(p.team_id)===String(a)).forEach(p=>$('playersA').add(new Option(p.name,p.id)));
- players.filter(p=>String(p.team_id)===String(b)).forEach(p=>$('playersB').add(new Option(p.name,p.id)));
+ players.filter(p=>String(p.team_id)===String(a)).forEach(p=>$('playersA').add(new Option(`${p.name} — ${p.role||''}`,p.id)));
+players.filter(p=>String(p.team_id)===String(b)).forEach(p=>$('playersB').add(new Option(`${p.name} — ${p.role||''}`,p.id)));
 }
 $('teamA').onchange=fill;$('teamB').onchange=fill;
 $('rosterTeam').onchange=renderRoster;$('rosterSearch').oninput=renderRoster;
