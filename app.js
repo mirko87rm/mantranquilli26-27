@@ -326,6 +326,7 @@ async function saveAdminResults(){
 
   show('Risultati salvati correttamente.',false);
   await renderAdminResultMatches();
+  await renderStandings();
 }
 
 if($('adminResultRound')){
@@ -342,29 +343,121 @@ function scoreParts(score){
  const m=String(score||'').match(/^(\d+)\s*-\s*(\d+)$/);
  return m?[Number(m[1]),Number(m[2])]:null;
 }
-function renderStandings(){
- const tbody=document.querySelector('#standingsTable tbody');
- if(!tbody)return;
- const rounds=CALENDARS.serie||[];
- const stats={};
- teams.forEach(t=>stats[t.name.toUpperCase()]={name:t.name,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});
- let completed=0;
- rounds.forEach(r=>r.matches.forEach(m=>{
-   const sc=scoreParts(m.score); if(!sc)return;
-   const hn=String(m.home||'').toUpperCase(), an=String(m.away||'').toUpperCase();
-   if(!stats[hn])stats[hn]={name:m.home,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
-   if(!stats[an])stats[an]={name:m.away,pg:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
-   const h=stats[hn], a=stats[an];
-   h.pg++;a.pg++;h.gf+=sc[0];h.ga+=sc[1];a.gf+=sc[1];a.ga+=sc[0];
-   if(sc[0]>sc[1]){h.w++;a.l++;h.pts+=3}
-   else if(sc[0]<sc[1]){a.w++;h.l++;a.pts+=3}
-   else{h.d++;a.d++;h.pts++;a.pts++}
-   completed++;
- }));
- const rows=Object.values(stats).sort((a,b)=>b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'it'));
- tbody.innerHTML=rows.map((r,i)=>`<tr><td><strong>${i+1}</strong></td><td><strong>${esc(r.name)}</strong></td><td>${r.pg}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gf-r.ga>0?'+':''}${r.gf-r.ga}</td><td><strong>${r.pts}</strong></td></tr>`).join('');
- const maxRound=rounds.filter(r=>r.matches.some(m=>scoreParts(m.score))).reduce((x,r)=>Math.max(x,r.round),0);
- $('standingsInfo').textContent=completed?`Aggiornata dopo la ${maxRound}ª giornata con ${completed} partite disputate.`:'Nessun risultato inserito nel calendario.';
+async function renderStandings(){
+    const tbody=document.querySelector('#standingsTable tbody');
+    if(!tbody)return;
+
+    const rounds=CALENDARS.serie||[];
+
+    const mr=await db
+        .from('match_results')
+        .select('round,home_team,away_team,score');
+
+    if(mr.error){
+        console.error(mr.error);
+        return;
+    }
+
+    const saved={};
+    (mr.data||[]).forEach(x=>{
+        saved[`${x.home_team}|${x.away_team}`]=x.score;
+    });
+
+    const stats={};
+
+    teams.forEach(t=>{
+        stats[t.name.toUpperCase()]={
+            name:t.name,
+            pg:0,
+            w:0,
+            d:0,
+            l:0,
+            gf:0,
+            ga:0,
+            pts:0
+        };
+    });
+
+    let completed=0;
+
+    rounds.forEach(r=>{
+        r.matches.forEach(m=>{
+            if(m.bye)return;
+
+            const hn=String(m.home||'').toUpperCase();
+            const an=String(m.away||'').toUpperCase();
+
+            if(!stats[hn] || !stats[an])return;
+
+            const score=saved[`${m.home}|${m.away}`];
+
+            if(!score)return;
+
+            const sc=String(score).match(/^(\d+)\s*-\s*(\d+)$/);
+            if(!sc)return;
+
+            const hs=Number(sc[1]);
+            const as=Number(sc[2]);
+
+            const h=stats[hn];
+            const a=stats[an];
+
+            h.pg++;
+            a.pg++;
+
+            h.gf+=hs;
+            h.ga+=as;
+
+            a.gf+=as;
+            a.ga+=hs;
+
+            if(hs>as){
+                h.w++;
+                h.pts+=3;
+                a.l++;
+            }else if(hs<as){
+                a.w++;
+                a.pts+=3;
+                h.l++;
+            }else{
+                h.d++;
+                a.d++;
+                h.pts++;
+                a.pts++;
+            }
+
+            completed++;
+        });
+    });
+
+    const rows=Object.values(stats).sort((a,b)=>
+        b.pts-a.pts ||
+        (b.gf-b.ga)-(a.gf-a.ga) ||
+        b.gf-a.gf ||
+        a.name.localeCompare(b.name)
+    );
+
+    tbody.innerHTML=rows.map((r,i)=>`
+        <tr>
+            <td><strong>${i+1}</strong></td>
+            <td><strong>${r.name}</strong></td>
+            <td>${r.pg}</td>
+            <td>${r.w}</td>
+            <td>${r.d}</td>
+            <td>${r.l}</td>
+            <td>${r.gf}</td>
+            <td>${r.ga}</td>
+            <td>${r.gf-r.ga}</td>
+            <td><strong>${r.pts}</strong></td>
+        </tr>
+    `).join('');
+
+    const info=$('standingsInfo');
+    if(info){
+        info.textContent=completed
+            ? `Aggiornata: ${completed} partite disputate.`
+            : 'Nessuna partita disputata.';
+    }
 }
 
 function renderChampionsStandings(){
