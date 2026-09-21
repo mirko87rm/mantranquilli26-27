@@ -331,6 +331,7 @@ async function saveAdminResults(){
 if($('adminResultRound')){
   $('adminResultRound').onchange=renderAdminResultMatches;
 }
+if($('adminResultRound')) loadAdminResultRounds();
 
 if($('adminSaveResults')){
   $('adminSaveResults').onclick=saveAdminResults;
