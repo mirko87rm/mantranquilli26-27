@@ -446,6 +446,7 @@ async function renderCalendar(){
     (mr.data||[]).forEach(x=>saved[`${x.home_team}|${x.away_team}`]=x.score);
 
     const n=Number($('calendarRound').value||rounds[0]?.round);
+  const r=rounds.find(x=>x.round===n)||rounds[0];
  r.matches.forEach(m=>{const g=m.group||'A';(grouped[g]??=[]).push(m)});
  let html='';
  Object.keys(grouped).sort().forEach(g=>{
