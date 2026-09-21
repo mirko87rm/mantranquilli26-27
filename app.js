@@ -447,6 +447,7 @@ async function renderCalendar(){
 
     const n=Number($('calendarRound').value||rounds[0]?.round);
   const r=rounds.find(x=>x.round===n)||rounds[0];
+  const grouped={};
  r.matches.forEach(m=>{const g=m.group||'A';(grouped[g]??=[]).push(m)});
  let html='';
  Object.keys(grouped).sort().forEach(g=>{
