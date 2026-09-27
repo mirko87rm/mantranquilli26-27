@@ -230,8 +230,9 @@ function loadAdminResultRounds(){
   const sel=$('adminResultRound');
   if(!sel)return;
 
-  const rounds=CALENDARS.serie||[];
-
+const competition=$('adminResultCompetition')?.value||'serie';
+const rounds=CALENDARS[competition]||[];
+  
   sel.innerHTML=rounds.map(r=>
     `<option value="${r.round}">Giornata ${r.round}</option>`
   ).join('');
@@ -246,7 +247,8 @@ async function renderAdminResultMatches(){
   if(!box||!sel)return;
 
   const round=Number(sel.value);
-  const rounds=CALENDARS.serie||[];
+  const competition=$('adminResultCompetition')?.value||'serie';
+  const rounds=CALENDARS[competition]||[];
   const current=rounds.find(r=>Number(r.round)===round);
 
   if(!current){
@@ -257,7 +259,7 @@ async function renderAdminResultMatches(){
   const {data,error}=await db
     .from('match_results')
     .select('home_team,away_team,score')
-    .eq('series','serie')
+.eq('series',competition)
     .eq('round',round);
 
   if(error){
@@ -293,13 +295,14 @@ async function saveAdminResults(){
   if(!sel)return;
 
   const round=Number(sel.value);
-  const rounds=CALENDARS.serie||[];
+  const competition=$('adminResultCompetition')?.value||'serie';
+const rounds=CALENDARS[competition]||[];
   const current=rounds.find(r=>Number(r.round)===round);
 
   if(!current)return;
 
   const rows=current.matches.map((m,i)=>({
-    series:'serie',
+    series:'competion',
     round:round,
     home_team:m.home,
     away_team:m.away,
@@ -327,6 +330,10 @@ async function saveAdminResults(){
   show('Risultati salvati correttamente.',false);
   await renderAdminResultMatches();
   await renderStandings();
+}
+
+if($('adminResultCompetition')){
+    $('adminResultCompetition').onchange=loadAdminResultRounds;
 }
 
 if($('adminResultRound')){
