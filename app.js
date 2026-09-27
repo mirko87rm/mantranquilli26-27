@@ -238,7 +238,7 @@ box.innerHTML=rows.map(x=>{
         const player=rows.find(x=>String(x.player_id)===String(playerId));
 
         if(!player)return;
-
+saleProposalTargetPlayerId=playerId;
         $('saleProposalBox').classList.remove('hidden');
 
         $('saleProposalInfo').textContent=
