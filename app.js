@@ -213,13 +213,25 @@ async function loadPlayerSales(){
         return;
     }
 
-    box.innerHTML=rows.map(x=>`
+    const myTeamId=currentProfile?.team_id;
+
+box.innerHTML=rows.map(x=>{
+    const isMine=String(x.owner_team_id)===String(myTeamId);
+
+    return `
         <div class="sale-player card">
             <strong>${x.players?.name||'Giocatore'}</strong>
             <span>${x.players?.role||''}</span>
             <span>${x.teams?.name||''}</span>
+
+            ${!isMine ? `
+                <button class="sale-propose" data-player-id="${x.player_id}">
+                    🔄 Proponi scambio
+                </button>
+            ` : ''}
         </div>
-    `).join('');
+    `;
+}).join('');
 }
 async function renderMyPlayerSales(){
     const select=$('saleMyPlayerSelect');
