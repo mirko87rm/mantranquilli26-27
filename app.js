@@ -284,7 +284,6 @@ async function load(){
  teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();
  teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
  renderTradeTeams();
- $('homeTeams').textContent=teams.length+' squadre';
  if(teams.length)$('rosterTeam').selectedIndex=0;
 fill();
 renderStandings();
