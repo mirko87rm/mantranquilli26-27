@@ -232,6 +232,34 @@ box.innerHTML=rows.map(x=>{
         </div>
     `;
 }).join('');
+  box.querySelectorAll('.sale-propose').forEach(btn=>{
+    btn.onclick=()=>{
+        const playerId=btn.dataset.playerId;
+        const player=rows.find(x=>String(x.player_id)===String(playerId));
+
+        if(!player)return;
+
+        $('saleProposalBox').classList.remove('hidden');
+
+        $('saleProposalInfo').textContent=
+            `Vuoi proporre uno scambio per ${player.players?.name||'questo giocatore'} a ${player.teams?.name||'questa squadra'}.`;
+
+        $('saleProposalPlayers').innerHTML='';
+
+        players
+            .filter(p=>String(p.team_id)===String(myTeamId))
+            .forEach(p=>{
+                $('saleProposalPlayers').add(
+                    new Option(
+                        `${p.name} — ${p.role||''}`,
+                        p.id
+                    )
+                );
+            });
+
+        $('saleProposalFeedback').textContent='';
+    };
+});
 }
 async function renderMyPlayerSales(){
     const select=$('saleMyPlayerSelect');
