@@ -124,23 +124,56 @@ async function loadMyLeagues(){
     const email=$('registerEmail').value.trim().toLowerCase();
     const password=$('registerPassword').value;
     const password2=$('registerPassword2').value;
+    const leagueId=$('registerLeague').value;
     const teamId=$('registerTeam').value;
     if(!/^[a-z0-9_-]{3,30}$/.test(username))return authMessage($('registerFeedback'),'Username: 3-30 caratteri, solo lettere, numeri, _ o -.',true);
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage($('registerFeedback'),'Inserisci un indirizzo email valido.',true);
     if(password.length<6)return authMessage($('registerFeedback'),'La password deve avere almeno 6 caratteri.',true);
-    if(password!==password2)return authMessage($('registerFeedback'),'Le password non coincidono.',true);
+    if(!leagueId)return authMessage($('registerFeedback'),'Seleziona un Fantacalcio.',true);
+if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
     if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
 
     const taken=await db.from('manager_profiles').select('team_id').eq('team_id',teamId).maybeSingle();
     if(taken.data)return authMessage($('registerFeedback'),'Questa squadra è già stata assegnata a un altro account.',true);
 
-    const r=await db.auth.signUp({email,password,options:{data:{username,team_id:teamId}}});
+   const r=await db.auth.signUp({
+  email,
+  password,
+  options:{
+    data:{
+      username,
+      team_id:teamId,
+      fantacalcio_id:leagueId
+    }
+  }
+});
     if(r.error){
       const msg=r.error.message||'';
       if(/already registered|already exists/i.test(msg))return authMessage($('registerFeedback'),'Questa email è già registrata.',true);
       if(/username/i.test(msg)&&/unique|duplicate|already/i.test(msg))return authMessage($('registerFeedback'),'Questo username è già utilizzato.',true);
       return authMessage($('registerFeedback'),msg,true);
     }
+    const userId = r.data.user?.id;
+
+if(userId && leagueId && teamId){
+  const { error: memberError } = await db
+    .from('fantacalcio_members')
+    .insert({
+      fantacalcio_id: leagueId,
+      user_id: userId,
+      team_id: teamId,
+      is_admin: false
+    });
+
+  if(memberError){
+    console.error(memberError);
+    return authMessage(
+      $('#registerFeedback'),
+      'Account creato, ma non è stato possibile completare l’iscrizione al Fantacalcio.',
+      true
+    );
+  }
+}
     if(!r.data.session){
       return authMessage($('registerFeedback'),'Account creato. Controlla la tua email e clicca sul link di conferma, poi torna qui per accedere.',false);
     }
@@ -152,12 +185,73 @@ async function loadMyLeagues(){
   db.auth.onAuthStateChange(()=>{setTimeout(()=>refreshAuth(),0);});
   await refreshAuth();
 }
-async function loadRegisterTeams(){
-  const sel=$('registerTeam'); if(!sel)return;
-  const r=await db.from('teams').select('id,name').order('name'); if(r.error)return;
-  const used=await db.from('manager_profiles').select('team_id');
-  const usedIds=new Set((used.data||[]).map(x=>x.team_id));
-  sel.innerHTML='<option value="">Seleziona la squadra…</option>'+r.data.filter(t=>!usedIds.has(t.id)).map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');
+async function loadRegisterLeagues(){
+  const leagueSelect=$('registerLeague');
+  const teamSelect=$('registerTeam');
+
+  if(!leagueSelect || !teamSelect)return;
+
+  const r=await db
+    .from('fantacalci')
+    .select('id,name,season')
+    .order('name');
+
+  if(r.error){
+    console.error(r.error);
+    return;
+  }
+
+  leagueSelect.innerHTML='<option value="">Seleziona il Fantacalcio...</option>'+
+    r.data.map(l=>
+      `<option value="${l.id}">${esc(l.name)}${l.season?' - '+esc(l.season):''}</option>`
+    ).join('');
+
+  teamSelect.innerHTML='<option value="">Prima scegli il Fantacalcio...</option>';
+  teamSelect.disabled=true;
+
+  leagueSelect.onchange=async()=>{
+    const leagueId=leagueSelect.value;
+
+    teamSelect.innerHTML='<option value="">Caricamento squadre...</option>';
+    teamSelect.disabled=true;
+
+    if(!leagueId){
+      teamSelect.innerHTML='<option value="">Prima scegli il Fantacalcio...</option>';
+      return;
+    }
+
+    const r=await db
+      .from('teams')
+      .select('id,name')
+      .eq('fantacalcio_id',leagueId)
+      .order('name');
+
+    if(r.error){
+      console.error(r.error);
+      teamSelect.innerHTML='<option value="">Errore caricamento squadre</option>';
+      return;
+    }
+
+    const used=await db
+      .from('manager_profiles')
+      .select('team_id');
+
+    if(used.error){
+      console.error(used.error);
+      return;
+    }
+
+    const usedIds=new Set((used.data||[]).map(x=>String(x.team_id)));
+
+    teamSelect.innerHTML=
+      '<option value="">Seleziona la squadra...</option>'+
+      r.data
+        .filter(t=>!usedIds.has(String(t.id)))
+        .map(t=>`<option value="${t.id}">${esc(t.name)}</option>`)
+        .join('');
+
+    teamSelect.disabled=false;
+  };
 }
 
 
@@ -187,7 +281,7 @@ async function load(){
  const t=await db.from('teams').select('id,name').order('name');
  const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
- teams=t.data;players=p.data;$('connection').textContent='Database collegato';await loadRegisterTeams();
+ teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();();
  teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
  renderTradeTeams();
  $('homeTeams').textContent=teams.length+' squadre';
