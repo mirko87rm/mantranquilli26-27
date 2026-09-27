@@ -281,7 +281,7 @@ async function load(){
  const t=await db.from('teams').select('id,name').order('name');
  const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
- teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();();
+ teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();
  teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
  renderTradeTeams();
  $('homeTeams').textContent=teams.length+' squadre';
