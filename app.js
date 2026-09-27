@@ -261,6 +261,90 @@ saleProposalTargetPlayerId=playerId;
     };
 });
 }
+$('saleProposalSend').onclick=async()=>{
+  if(!currentUser)return openAuth('login');
+
+  const targetPlayer=players.find(p=>String(p.id)===String(saleProposalTargetPlayerId));
+  if(!targetPlayer)return show('Giocatore destinatario non trovato.',true);
+
+  const selectedPlayers=[...$('saleProposalPlayers').selectedOptions].map(o=>({
+    id:o.value,
+    name:o.textContent
+  }));
+
+  if(selectedPlayers.length<1||selectedPlayers.length>5){
+    $('saleProposalFeedback').textContent='Seleziona da 1 a 5 giocatori da offrire.';
+    return;
+  }
+
+  const myTeamId=currentProfile?.team_id;
+  const targetTeamId=targetPlayer.team_id;
+
+  if(!myTeamId||!targetTeamId){
+    $('saleProposalFeedback').textContent='Impossibile determinare le squadre.';
+    return;
+  }
+
+  if(String(myTeamId)===String(targetTeamId)){
+    $('saleProposalFeedback').textContent='Non puoi proporre uno scambio con la tua stessa squadra.';
+    return;
+  }
+
+  $('saleProposalSend').disabled=true;
+  $('saleProposalFeedback').textContent='Invio proposta...';
+
+const session=await db
+    .from('market_sessions')
+    .select('id')
+    .eq('is_open',true)
+    .order('created_at',{ascending:false})
+    .limit(1)
+    .maybeSingle();
+
+if(session.error || !session.data){
+    $('saleProposalSend').disabled=false;
+    $('saleProposalFeedback').textContent='Nessun mercato aperto.';
+    return;
+}
+
+const r=await db.from('trades').insert({
+    session_id:session.data.id,
+    from_team_id:myTeamId,
+    to_team_id:targetTeamId,
+    status:'pending'
+}).select('id').single();
+  if(r.error){
+    $('saleProposalSend').disabled=false;
+    $('saleProposalFeedback').textContent=r.error.message;
+    return;
+  }
+
+  const rows=[
+    ...selectedPlayers.map(p=>({
+      trade_id:r.data.id,
+      player_id:p.id,
+      direction:'ceded'
+    })),
+    {
+      trade_id:r.data.id,
+      player_id:targetPlayer.id,
+      direction:'acquired'
+    }
+  ];
+
+  const q=await db.from('trade_players').insert(rows);
+
+  if(q.error){
+    $('saleProposalSend').disabled=false;
+    $('saleProposalFeedback').textContent=q.error.message;
+    return;
+  }
+
+  $('saleProposalFeedback').textContent='✅ Proposta inviata correttamente!';
+  $('saleProposalSend').disabled=false;
+
+  await loadTrades();
+};
 async function renderMyPlayerSales(){
     const select=$('saleMyPlayerSelect');
     const button=$('saleMyPlayerButton');
