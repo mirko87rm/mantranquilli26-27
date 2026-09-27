@@ -57,9 +57,68 @@ async function initAuth(){
     if(!email||!password)return authMessage($('loginFeedback'),'Inserisci email e password.',true);
     const r=await db.auth.signInWithPassword({email,password});
     if(r.error)return authMessage($('loginFeedback'),'Email o password non corretti.',true);
-    closeAuth();await refreshAuth();show('Accesso effettuato.',false);
-  };
+closeAuth();await refreshAuth();await loadMyLeagues();  };
+let currentLeagueId=null;
+let currentLeague=null;
 
+async function loadMyLeagues(){
+  if(!currentUser)return;
+
+  const r=await db
+    .from('fantacalcio_members')
+    .select('fantacalcio_id, is_admin, fantacalci(id,name,season)')
+    .eq('user_id',currentUser.id);
+
+  if(r.error){
+    console.error(r.error);
+    show(r.error.message,true);
+    return;
+  }
+
+  const chooser=$('leagueChooser');
+  const list=$('myLeagues');
+
+  if(!chooser || !list)return;
+
+  if(!r.data || !r.data.length){
+    list.innerHTML='<p>Non sei ancora registrato in nessun Fantacalcio.</p>';
+    chooser.classList.remove('hidden');
+    return;
+  }
+
+  list.innerHTML=r.data.map(m=>{
+    const league=m.fantacalci;
+    return `
+      <button class="league-card" data-league-id="${league.id}">
+        <strong>${esc(league.name)}</strong>
+        <span>Stagione ${esc(league.season || '')}</span>
+      </button>
+    `;
+  }).join('');
+
+  chooser.classList.remove('hidden');
+
+  list.querySelectorAll('.league-card').forEach(button=>{
+    button.onclick=()=>{
+      const id=button.dataset.leagueId;
+      const selected=r.data.find(m=>String(m.fantacalcio_id)===String(id));
+
+      if(!selected)return;
+
+      currentLeagueId=selected.fantacalcio_id;
+      currentLeague=selected.fantacalci;
+
+      localStorage.setItem('currentLeagueId',currentLeagueId);
+
+      chooser.classList.add('hidden');
+      $('welcomeHome')?.classList.add('hidden');
+
+      show('Entrato in '+currentLeague.name,false);
+
+      console.log('Fantacalcio selezionato:',currentLeague);
+    };
+  });
+}
   $('registerBtn').onclick=async()=>{
     const username=$('registerUsername').value.trim().toLowerCase();
     const email=$('registerEmail').value.trim().toLowerCase();
