@@ -145,6 +145,7 @@ if($('saleTeamFilter')){
 }
 
 await loadPlayerSales();
+await renderMyPlayerSales();
 }
 function renderTradeTeams(){
  const a=$('teamA'), b=$('teamB'); if(!a||!b)return;
@@ -219,6 +220,96 @@ async function loadPlayerSales(){
             <span>${x.teams?.name||''}</span>
         </div>
     `).join('');
+}
+async function renderMyPlayerSales(){
+    const box=$('saleMyPlayers');
+    if(!box)return;
+
+    const myTeamId=currentProfile?.team_id;
+    if(!myTeamId){
+        box.innerHTML='<p class="hint">Accedi per visualizzare i tuoi giocatori.</p>';
+        return;
+    }
+
+    const r=await db
+        .from('players')
+        .select('id,name,role,team_id')
+        .eq('team_id',myTeamId)
+        .order('name');
+
+    if(r.error){
+        box.innerHTML=`<p class="error">${r.error.message}</p>`;
+        return;
+    }
+
+    const sales=await db
+        .from('player_sales')
+        .select('player_id,status')
+        .eq('owner_team_id',myTeamId)
+        .eq('status','active');
+
+    if(sales.error){
+        box.innerHTML=`<p class="error">${sales.error.message}</p>`;
+        return;
+    }
+
+    const listed=new Set((sales.data||[]).map(x=>String(x.player_id)));
+
+    if(!r.data?.length){
+        box.innerHTML='<p class="hint">Nessun giocatore trovato.</p>';
+        return;
+    }
+
+    box.innerHTML=r.data.map(p=>{
+        const active=listed.has(String(p.id));
+
+        return `
+            <div class="sale-player card">
+                <strong>${p.name}</strong>
+                <span>${p.role||''}</span>
+                <button class="sale-toggle" data-player-id="${p.id}" data-active="${active}">
+                    ${active?'❌ Togli dalla vendita':'🏷️ Metti in vendita'}
+                </button>
+            </div>
+        `;
+    }).join('');
+
+    box.querySelectorAll('.sale-toggle').forEach(btn=>{
+        btn.onclick=async()=>{
+            const playerId=btn.dataset.playerId;
+            const active=btn.dataset.active==='true';
+
+            if(active){
+                const r=await db
+                    .from('player_sales')
+                    .update({status:'inactive'})
+                    .eq('player_id',playerId)
+                    .eq('owner_team_id',myTeamId);
+
+                if(r.error){
+                    alert(r.error.message);
+                    return;
+                }
+            }else{
+                const r=await db
+                    .from('player_sales')
+                    .insert({
+                        player_id:playerId,
+                        owner_team_id:myTeamId,
+                        status:'active'
+                    });
+
+                if(r.error){
+                    alert(r.error.message);
+                    return;
+                }
+            }
+
+            await renderMyPlayerSales();
+            await loadPlayerSales();
+    
+        };
+    });
 }
 
 if($('saleTeamFilter')){
