@@ -44,3 +44,124 @@ main{flex:1;max-width:none;margin:25px auto;padding:0 24px;width:100%}
 @media(max-width:700px){#authArea{gap:4px}.auth-btn{padding:7px 8px;font-size:12px}header{gap:8px}.auth-user span{display:none}}
 
 .admin-hero{background:linear-gradient(135deg,#111,#2d2d2d);color:#fff}.admin-hero p{color:#ccc}.admin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.admin-grid>div{background:#ffffff12;border:1px solid #ffffff1c;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:6px}.admin-grid span{font-size:20px;font-weight:800}.admin-table{width:100%;border-collapse:collapse}.admin-table td,.admin-table th{padding:10px;border-bottom:1px solid #eee;text-align:left}.admin-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eee;font-size:12px;font-weight:800}.admin-badge.ok{background:#dcfce7;color:#166534}.admin-badge.wait{background:#fef3c7;color:#92400e}.admin-actions{display:flex;gap:6px;flex-wrap:wrap}@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}
+/* =========================
+   HOME INIZIALE FANTACALCIO
+   ========================= */
+
+.welcome-home {
+  min-height: calc(100vh - 100px);
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.55)),
+    url("sfondo-fantacalcio.png") center center / cover no-repeat;
+  border-radius: 18px;
+}
+
+.welcome-content {
+  width: min(700px, 100%);
+  text-align: center;
+  color: #fff;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px;
+  padding: 45px 30px;
+  box-shadow: 0 15px 50px rgba(0,0,0,.35);
+}
+
+.welcome-content h1 {
+  margin: 0 0 15px;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.welcome-content p {
+  margin: 0 0 30px;
+  font-size: 1.2rem;
+  color: #eee;
+}
+
+.home-login-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: #fff;
+  color: #111;
+  transition: .2s ease;
+}
+
+.home-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,.3);
+}
+
+/* Scelta Fantacalcio */
+
+.league-chooser {
+  margin: 25px auto;
+  max-width: 900px;
+}
+
+.league-chooser.hidden {
+  display: none;
+}
+
+.league-chooser h2 {
+  margin-bottom: 8px;
+}
+
+.league-chooser p {
+  margin-bottom: 20px;
+}
+
+#myLeagues {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.league-card {
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.league-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
+
+@media (max-width: 700px) {
+  .welcome-home {
+    min-height: calc(100vh - 80px);
+    padding: 20px 12px;
+    border-radius: 0;
+  }
+
+  .welcome-content {
+    padding: 35px 20px;
+  }
+
+  .welcome-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .welcome-content p {
+    font-size: 1rem;
+  }
+
+  .home-login-btn {
+    width: 100%;
+  }
+}
