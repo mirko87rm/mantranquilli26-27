@@ -347,21 +347,15 @@ async function renderStandings(){
     const tbody=document.querySelector('#standingsTable tbody');
     if(!tbody)return;
 
-    const rounds=CALENDARS.serie||[];
-
     const mr=await db
         .from('match_results')
-        .select('round,home_team,away_team,score');
+        .select('round,home_team,away_team,score,series')
+        .eq('series','serie');
 
     if(mr.error){
         console.error(mr.error);
         return;
     }
-
-    const saved={};
-    (mr.data||[]).forEach(x=>{
-        saved[`${x.home_team}|${x.away_team}`]=x.score;
-    });
 
     const stats={};
 
@@ -380,54 +374,45 @@ async function renderStandings(){
 
     let completed=0;
 
-    rounds.forEach(r=>{
-        r.matches.forEach(m=>{
-            if(m.bye)return;
+    (mr.data||[]).forEach(m=>{
+        if(!m.score)return;
 
-            const hn=String(m.home||'').toUpperCase();
-            const an=String(m.away||'').toUpperCase();
+        const sc=scoreParts(m.score);
+        if(!sc)return;
 
-            if(!stats[hn] || !stats[an])return;
+        const hn=String(m.home_team||'').toUpperCase();
+        const an=String(m.away_team||'').toUpperCase();
 
-            const score=saved[`${m.home}|${m.away}`];
+        if(!stats[hn] || !stats[an])return;
 
-            if(!score)return;
+        const h=stats[hn];
+        const a=stats[an];
 
-            const sc=String(score).match(/^(\d+)\s*-\s*(\d+)$/);
-            if(!sc)return;
+        h.pg++;
+        a.pg++;
 
-            const hs=Number(sc[1]);
-            const as=Number(sc[2]);
+        h.gf+=sc[0];
+        h.ga+=sc[1];
 
-            const h=stats[hn];
-            const a=stats[an];
+        a.gf+=sc[1];
+        a.ga+=sc[0];
 
-            h.pg++;
-            a.pg++;
+        if(sc[0]>sc[1]){
+            h.w++;
+            h.pts+=3;
+            a.l++;
+        }else if(sc[0]<sc[1]){
+            a.w++;
+            a.pts+=3;
+            h.l++;
+        }else{
+            h.d++;
+            a.d++;
+            h.pts++;
+            a.pts++;
+        }
 
-            h.gf+=hs;
-            h.ga+=as;
-
-            a.gf+=as;
-            a.ga+=hs;
-
-            if(hs>as){
-                h.w++;
-                h.pts+=3;
-                a.l++;
-            }else if(hs<as){
-                a.w++;
-                a.pts+=3;
-                h.l++;
-            }else{
-                h.d++;
-                a.d++;
-                h.pts++;
-                a.pts++;
-            }
-
-            completed++;
-        });
+        completed++;
     });
 
     const rows=Object.values(stats).sort((a,b)=>
@@ -453,13 +438,13 @@ async function renderStandings(){
     `).join('');
 
     const info=$('standingsInfo');
+
     if(info){
         info.textContent=completed
             ? `Aggiornata: ${completed} partite disputate.`
             : 'Nessuna partita disputata.';
     }
 }
-
 function renderChampionsStandings(){
  const info=$('champStandingsInfo');
  const groups={A:{},B:{}};
