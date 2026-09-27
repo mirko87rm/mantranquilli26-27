@@ -44,8 +44,17 @@
       <label>Email<input id="registerEmail" type="email" autocomplete="email" inputmode="email" placeholder="nome@email.it"></label>
       <label>Password<input id="registerPassword" type="password" autocomplete="new-password" minlength="6"></label>
       <label>Conferma password<input id="registerPassword2" type="password" autocomplete="new-password" minlength="6"></label>
-      <label>Squadra<select id="registerTeam"><option value="">Seleziona la squadra…</option></select></label>
-      <button id="registerBtn">Crea account</button>
+<label>Fantacalcio
+  <select id="registerLeague">
+    <option value="">Seleziona il Fantacalcio...</option>
+  </select>
+</label>
+
+<label>Squadra
+  <select id="registerTeam" disabled>
+    <option value="">Prima scegli il Fantacalcio...</option>
+  </select>
+</label>      <button id="registerBtn">Crea account</button>
       <p id="registerFeedback" class="feedback"></p>
       <p class="auth-switch">Hai già un account? <button id="switchLogin" class="link-btn">Accedi</button></p>
     </div>
