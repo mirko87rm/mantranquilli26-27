@@ -867,3 +867,18 @@ renderChampionsStandings();
 renderStatistics();
 initAuth();
 load();
+document.addEventListener('DOMContentLoaded',()=>{
+  const whatsapp=$('shareWhatsapp');
+
+  if(whatsapp){
+    whatsapp.onclick=()=>{
+      const url='https://mantranquillisitocorrettogiocatorip-gamma.vercel.app';
+      const text='⚽ Entra nel mio Fantacalcio MANTRANQUILLI26/27!\n\n👉 '+url;
+
+      window.open(
+        'https://wa.me/?text='+encodeURIComponent(text),
+        '_blank'
+      );
+    };
+  }
+});
