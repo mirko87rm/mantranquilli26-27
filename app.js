@@ -133,7 +133,18 @@ async function load(){
  renderTradeTeams();
  $('homeTeams').textContent=teams.length+' squadre';
  if(teams.length)$('rosterTeam').selectedIndex=0;
- fill();renderRoster();renderStandings();await loadMarket();await loadTrades();await loadAdminPanel();
+fill();
+renderStandings();
+await loadMarket();
+
+if($('saleTeamFilter')){
+    $('saleTeamFilter').innerHTML='<option value="">Tutte</option>';
+    teams.forEach(t=>{
+        $('saleTeamFilter').add(new Option(t.name,t.id));
+    });
+}
+
+await loadPlayerSales();
 }
 function renderTradeTeams(){
  const a=$('teamA'), b=$('teamB'); if(!a||!b)return;
@@ -158,6 +169,64 @@ function fill(){
  const a=$('teamA').value,b=$('teamB').value;
  players.filter(p=>String(p.team_id)===String(a)).forEach(p=>$('playersA').add(new Option(`${p.name} — ${p.role||''}`,p.id)));
 players.filter(p=>String(p.team_id)===String(b)).forEach(p=>$('playersB').add(new Option(`${p.name} — ${p.role||''}`,p.id)));
+}
+async function loadPlayerSales(){
+    const box=$('salePlayers');
+    if(!box)return;
+
+    const r=await db
+        .from('player_sales')
+        .select(`
+            id,
+            player_id,
+            owner_team_id,
+            status,
+            players:player_id(id,name,role,team_id),
+            teams:owner_team_id(id,name)
+        `)
+        .eq('status','active');
+
+    if(r.error){
+        box.innerHTML=`<p class="error">${r.error.message}</p>`;
+        return;
+    }
+
+    const teamFilter=$('saleTeamFilter')?.value||'';
+    const roleFilter=$('saleRoleFilter')?.value||'';
+
+    let rows=r.data||[];
+
+    if(teamFilter){
+        rows=rows.filter(x=>String(x.owner_team_id)===String(teamFilter));
+    }
+
+    if(roleFilter){
+        rows=rows.filter(x=>{
+            const role=String(x.players?.role||'');
+            return role.split(';').includes(roleFilter);
+        });
+    }
+
+    if(!rows.length){
+        box.innerHTML='<p class="hint">Nessun giocatore in vendita.</p>';
+        return;
+    }
+
+    box.innerHTML=rows.map(x=>`
+        <div class="sale-player card">
+            <strong>${x.players?.name||'Giocatore'}</strong>
+            <span>${x.players?.role||''}</span>
+            <span>${x.teams?.name||''}</span>
+        </div>
+    `).join('');
+}
+
+if($('saleTeamFilter')){
+    $('saleTeamFilter').onchange=loadPlayerSales;
+}
+
+if($('saleRoleFilter')){
+    $('saleRoleFilter').onchange=loadPlayerSales;
 }
 $('teamA').onchange=fill;$('teamB').onchange=fill;
 $('rosterTeam').onchange=renderRoster;$('rosterSearch').oninput=renderRoster;
