@@ -222,12 +222,16 @@ async function loadPlayerSales(){
     `).join('');
 }
 async function renderMyPlayerSales(){
-    const box=$('saleMyPlayers');
-    if(!box)return;
+    const select=$('saleMyPlayerSelect');
+    const button=$('saleMyPlayerButton');
+
+    if(!select || !button)return;
 
     const myTeamId=currentProfile?.team_id;
+
     if(!myTeamId){
-        box.innerHTML='<p class="hint">Accedi per visualizzare i tuoi giocatori.</p>';
+        select.innerHTML='<option value="">Accedi per visualizzare i tuoi giocatori</option>';
+        button.disabled=true;
         return;
     }
 
@@ -238,7 +242,8 @@ async function renderMyPlayerSales(){
         .order('name');
 
     if(r.error){
-        box.innerHTML=`<p class="error">${r.error.message}</p>`;
+        select.innerHTML='<option value="">Errore caricamento giocatori</option>';
+        button.disabled=true;
         return;
     }
 
@@ -249,67 +254,82 @@ async function renderMyPlayerSales(){
         .eq('status','active');
 
     if(sales.error){
-        box.innerHTML=`<p class="error">${sales.error.message}</p>`;
+        select.innerHTML='<option value="">Errore caricamento vendita</option>';
+        button.disabled=true;
         return;
     }
 
-    const listed=new Set((sales.data||[]).map(x=>String(x.player_id)));
+    const listed=new Set(
+        (sales.data||[]).map(x=>String(x.player_id))
+    );
 
-    if(!r.data?.length){
-        box.innerHTML='<p class="hint">Nessun giocatore trovato.</p>';
-        return;
-    }
+    select.innerHTML='<option value="">Seleziona un giocatore</option>';
 
-    box.innerHTML=r.data.map(p=>{
+    (r.data||[]).forEach(p=>{
         const active=listed.has(String(p.id));
 
-        return `
-            <div class="sale-player card">
-                <strong>${p.name}</strong>
-                <span>${p.role||''}</span>
-                <button class="sale-toggle" data-player-id="${p.id}" data-active="${active}">
-                    ${active?'❌ Togli dalla vendita':'🏷️ Metti in vendita'}
-                </button>
-            </div>
-        `;
-    }).join('');
-
-    box.querySelectorAll('.sale-toggle').forEach(btn=>{
-        btn.onclick=async()=>{
-            const playerId=btn.dataset.playerId;
-            const active=btn.dataset.active==='true';
-
-            if(active){
-                const r=await db
-                    .from('player_sales')
-                    .update({status:'inactive'})
-                    .eq('player_id',playerId)
-                    .eq('owner_team_id',myTeamId);
-
-                if(r.error){
-                    alert(r.error.message);
-                    return;
-                }
-            }else{
-                const r=await db
-                    .from('player_sales')
-                    .insert({
-                        player_id:playerId,
-                        owner_team_id:myTeamId,
-                        status:'active'
-                    });
-
-                if(r.error){
-                    alert(r.error.message);
-                    return;
-                }
-            }
-
-            await renderMyPlayerSales();
-            await loadPlayerSales();
-    
-        };
+        select.add(
+            new Option(
+                `${p.name} — ${p.role||''}${active?' — IN VENDITA':''}`,
+                p.id
+            )
+        );
     });
+
+    button.disabled=true;
+
+    select.onchange=()=>{
+        const playerId=select.value;
+
+        if(!playerId){
+            button.disabled=true;
+            button.textContent='🏷️ Metti in vendita';
+            return;
+        }
+
+        const active=listed.has(String(playerId));
+
+        button.disabled=false;
+        button.textContent=active
+            ? '❌ Togli dalla vendita'
+            : '🏷️ Metti in vendita';
+    };
+
+    button.onclick=async()=>{
+        const playerId=select.value;
+        if(!playerId)return;
+
+        const active=listed.has(String(playerId));
+
+        if(active){
+            const r=await db
+                .from('player_sales')
+                .update({status:'inactive'})
+                .eq('player_id',playerId)
+                .eq('owner_team_id',myTeamId);
+
+            if(r.error){
+                alert(r.error.message);
+                return;
+            }
+        }else{
+            const r=await db
+                .from('player_sales')
+                .insert({
+                    player_id:playerId,
+                    owner_team_id:myTeamId,
+                    status:'active'
+                });
+
+            if(r.error){
+                alert(r.error.message);
+                return;
+            }
+        }
+
+        await renderMyPlayerSales();
+        await loadPlayerSales();
+    };
 }
 
 if($('saleTeamFilter')){
