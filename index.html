@@ -17,6 +17,7 @@
   <button class="nav-item" data-section="classifica">🏆 <span>Classifica</span></button>
   <button class="nav-item" data-section="scambi">🔄 <span>Scambi</span></button>
   <button class="nav-item" data-section="mercato">💰 <span>Mercato</span></button>
+  <button class="nav-item" data-section="vendita">🏷️ <span>Giocatori in vendita</span></button>
   <button class="nav-item" data-section="statistiche">📊 <span>Statistiche</span></button>
   <button class="nav-item" data-section="regolamento">📖 <span>Regolamento</span></button>
   <button id="adminNav" class="nav-item" data-section="admin">⚙️ <span>ADMIN</span></button>
@@ -137,7 +138,51 @@
 
 <section id="section-mercato" class="page-section"><section class="card"><h2>Stato mercato</h2><div class="market"><strong id="marketStatus">Caricamento…</strong><button id="toggleMarket">Apri/chiudi mercato</button></div><p class="hint">Gli scambi richiedono lo stesso numero di giocatori ceduti e ricevuti, massimo 5 per squadra.</p></section></section>
 
-<section id="section-statistiche" class="page-section">
+<section id="section-vendita" class="page-section">
+    <div class="section-header">
+        <h2>🏷️ Giocatori in vendita</h2>
+        <p class="hint">Metti a disposizione i tuoi giocatori e ricevi proposte di scambio.</p>
+    </div>
+
+    <div class="card">
+        <h3>🔎 Filtri</h3>
+
+        <div class="form-grid">
+            <label>
+                Squadra
+                <select id="saleTeamFilter">
+                    <option value="">Tutte</option>
+                </select>
+            </label>
+
+            <label>
+                Ruolo
+                <select id="saleRoleFilter">
+                    <option value="">Tutti</option>
+                    <option value="Por">Por</option>
+                    <option value="Dc">Dc</option>
+                    <option value="Dd">Dd</option>
+                    <option value="Ds">Ds</option>
+                    <option value="E">E</option>
+                    <option value="M">M</option>
+                    <option value="C">C</option>
+                    <option value="T">T</option>
+                    <option value="W">W</option>
+                    <option value="A">A</option>
+                    <option value="Pc">Pc</option>
+                </select>
+            </label>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>👥 Giocatori disponibili</h3>
+        <div id="salePlayers">
+            <p class="hint">Caricamento...</p>
+        </div>
+    </div>
+</section>
+  <section id="section-statistiche" class="page-section">
 <section class="card"><h2>📊 Statistiche</h2><p id="statsInfo" class="hint"></p>
 <div class="stats-tabs"><button class="stats-tab active" data-stats="serie">Serie A</button><button class="stats-tab" data-stats="champions">Champions League</button></div>
 <div id="statsHighlights" class="stats-highlights"></div>
