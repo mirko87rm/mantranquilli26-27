@@ -62,7 +62,10 @@ async function initAuth(){
 closeAuth();
 await refreshAuth();
 
-$('welcomeHome')?.classList.add('hidden');
+document.body.classList.remove('league-selected');
+document.body.classList.add('choosing-league');
+
+$('welcomeHome')?.classList.remove('hidden');
 $('leagueChooser')?.classList.remove('hidden');
 
 await loadMyLeagues();
@@ -103,7 +106,6 @@ async function loadMyLeagues(){
   }).join('');
 
  chooser.classList.remove('hidden');
-$('welcomeHome')?.classList.add('hidden');
 
   list.querySelectorAll('.league-card').forEach(button=>{
     button.onclick=()=>{
@@ -116,6 +118,7 @@ $('welcomeHome')?.classList.add('hidden');
       currentLeague=selected.fantacalci;
 
       localStorage.setItem('currentLeagueId',currentLeagueId);
+      document.body.classList.remove('choosing-league');
       document.body.classList.add('league-selected');
 
       chooser.classList.add('hidden');
