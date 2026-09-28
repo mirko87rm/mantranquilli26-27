@@ -219,5 +219,91 @@ body:not(.league-selected) #section-home {
   width: 100%;
   max-width: none;
   margin: 0;
+  /* SELEZIONE FANTACALCIO */
+
+body.choosing-league .sidebar {
+  display: none !important;
+}
+
+body.choosing-league .layout {
+  display: block;
+  min-height: 100vh;
+}
+
+body.choosing-league main {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
   padding: 0;
+}
+
+body.choosing-league #section-home {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body.choosing-league .welcome-home {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+body.choosing-league .welcome-content {
+  display: none;
+}
+
+body.choosing-league .league-chooser {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: rgba(0,0,0,.18);
+}
+
+body.choosing-league .league-chooser h2,
+body.choosing-league .league-chooser p {
+  color: #fff;
+}
+
+body.choosing-league #myLeagues {
+  width: min(900px, 100%);
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+
+body.choosing-league .league-card {
+  min-height: 130px;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+}
+
+body.choosing-league .league-card strong {
+  display: block;
+  font-size: 1.35rem;
+}
+
+body.choosing-league .league-card span {
+  display: block;
+  margin-top: 8px;
+  color: #ddd;
+}
+
+@media (max-width: 700px) {
+  body.choosing-league #myLeagues {
+    grid-template-columns: 1fr;
+  }
 }
