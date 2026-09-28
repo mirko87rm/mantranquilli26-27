@@ -214,3 +214,10 @@ body:not(.league-selected) .welcome-home {
   box-sizing: border-box;
   border-radius: 0;
 }
+/* HOME: elimina il limite di larghezza della sezione */
+body:not(.league-selected) #section-home {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
