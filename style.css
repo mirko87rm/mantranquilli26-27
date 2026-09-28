@@ -205,3 +205,12 @@ body:not(.league-selected) .welcome-home {
   min-height: 100vh;
   border-radius: 0;
 }
+/* HOME A SCHERMO INTERO */
+body:not(.league-selected) .welcome-home {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 0;
+}
