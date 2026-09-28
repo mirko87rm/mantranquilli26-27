@@ -126,7 +126,7 @@ $('welcomeHome')?.classList.add('hidden');
       console.log('Fantacalcio selezionato:',currentLeague);
     };
   });
-}
+};
   $('registerBtn').onclick=async()=>{
     const username=$('registerUsername').value.trim().toLowerCase();
     const email=$('registerEmail').value.trim().toLowerCase();
