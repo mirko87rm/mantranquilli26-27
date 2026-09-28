@@ -97,7 +97,8 @@ async function loadMyLeagues(){
     `;
   }).join('');
 
-  chooser.classList.remove('hidden');
+ chooser.classList.remove('hidden');
+$('welcomeHome')?.classList.add('hidden');
 
   list.querySelectorAll('.league-card').forEach(button=>{
     button.onclick=()=>{
