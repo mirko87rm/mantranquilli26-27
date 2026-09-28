@@ -178,3 +178,30 @@ main{flex:1;max-width:none;margin:25px auto;padding:0 24px;width:100%}
     width: 100%;
   }
 }
+/* HOME INIZIALE: nasconde il menu laterale */
+body:not(.league-selected) .sidebar {
+  display: none !important;
+}
+
+body:not(.league-selected) .layout {
+  display: block;
+  min-height: 100vh;
+}
+
+body:not(.league-selected) main {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body:not(.league-selected) #section-home {
+  display: block;
+  min-height: 100vh;
+}
+
+body:not(.league-selected) .welcome-home {
+  min-height: 100vh;
+  border-radius: 0;
+}
