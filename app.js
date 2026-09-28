@@ -47,6 +47,7 @@ function updateAdminUI(){
   }
 }
 async function initAuth(){
+  $('homeLoginBtn').onclick=()=>openAuth('login');
   $('closeAuth').onclick=closeAuth;
   $('switchRegister').onclick=()=>openAuth('register');
   $('switchLogin').onclick=()=>openAuth('login');
