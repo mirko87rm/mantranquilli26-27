@@ -4,7 +4,8 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);let teams=[],players=[],marketOpen=false;
 
 let currentUser=null,currentProfile=null;
-function authMessage(el,msg,error=false){if(el){el.textContent=msg||'';el.classList.toggle('error',!!error)}}
+let currentLeagueId=null;
+let currentLeague=null;function authMessage(el,msg,error=false){if(el){el.textContent=msg||'';el.classList.toggle('error',!!error)}}
 function openAuth(mode='login'){
   $('authModal').classList.remove('hidden');
   $('loginForm').classList.toggle('hidden',mode!=='login');
@@ -58,9 +59,13 @@ async function initAuth(){
     if(!email||!password)return authMessage($('loginFeedback'),'Inserisci email e password.',true);
     const r=await db.auth.signInWithPassword({email,password});
     if(r.error)return authMessage($('loginFeedback'),'Email o password non corretti.',true);
-closeAuth();await refreshAuth();await loadMyLeagues();  };
-let currentLeagueId=null;
-let currentLeague=null;
+closeAuth();
+await refreshAuth();
+
+$('welcomeHome')?.classList.add('hidden');
+$('leagueChooser')?.classList.remove('hidden');
+
+await loadMyLeagues();
 
 async function loadMyLeagues(){
   if(!currentUser)return;
@@ -111,6 +116,7 @@ $('welcomeHome')?.classList.add('hidden');
       currentLeague=selected.fantacalci;
 
       localStorage.setItem('currentLeagueId',currentLeagueId);
+      document.body.classList.add('league-selected');
 
       chooser.classList.add('hidden');
       $('welcomeHome')?.classList.add('hidden');
