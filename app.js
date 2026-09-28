@@ -66,7 +66,7 @@ $('welcomeHome')?.classList.add('hidden');
 $('leagueChooser')?.classList.remove('hidden');
 
 await loadMyLeagues();
-
+};
 async function loadMyLeagues(){
   if(!currentUser)return;
 
