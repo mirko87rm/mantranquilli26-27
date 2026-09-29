@@ -117,7 +117,7 @@ async function loadMyLeagues(){
       currentLeague=selected.fantacalci;
 
       localStorage.setItem('currentLeagueId',currentLeagueId);
-      await load();
+      
       document.body.classList.remove('choosing-league');
       document.body.classList.add('league-selected');
 
