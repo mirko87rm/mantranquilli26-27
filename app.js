@@ -108,7 +108,7 @@ async function loadMyLeagues(){
  chooser.classList.remove('hidden');
 
   list.querySelectorAll('.league-card').forEach(button=>{
-111  button.onclick=async()=>{      const id=button.dataset.leagueId;
+  button.onclick=async()=>{      const id=button.dataset.leagueId;
       const selected=r.data.find(m=>String(m.fantacalcio_id)===String(id));
 
       if(!selected)return;
