@@ -219,6 +219,8 @@ body:not(.league-selected) #section-home {
   width: 100%;
   max-width: none;
   margin: 0;
+  }
+
   /* SELEZIONE FANTACALCIO */
 
 body.choosing-league .sidebar {
