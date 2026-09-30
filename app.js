@@ -305,8 +305,7 @@ await loadMarket();
 
 if($('saleTeamFilter')){
     $('saleTeamFilter').innerHTML='<option value="">Tutte</option>';
-  $('teamB').innerHTML='';
-$('rosterTeam').innerHTML='';
+ 
     teams.forEach(t=>{
         $('saleTeamFilter').add(new Option(t.name,t.id));
     });
