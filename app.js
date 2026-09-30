@@ -1031,15 +1031,19 @@ document.querySelectorAll('.stats-tab').forEach(btn=>btn.onclick=()=>{
 let activeCalendar='serie';
 
 function renderCalendarRoundOptions(){
-const rounds=currentLeague?.name==='FANTAURELIA' ? [] : (CALENDARS[activeCalendar]||[]); renderCalendar();
+  const rounds=currentLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
+  $('calendarRound').innerHTML=rounds.map(r=>`<option value="${r.round}">Giornata ${r.round}</option>`).join('');
+  renderCalendar();
 }
+
 async function renderCalendar(){
-const rounds=currentLeague?.name==='FANTAURELIA' ? [] : (CALENDARS[activeCalendar]||[]);    const saved={};
+  const rounds=currentLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
+ const saved={};
   if(!rounds.length){
-  $('calendarRound').innerHTML='';
-  $('calendarContent').innerHTML='<p class="hint">Nessun calendario disponibile.</p>';
-  return;
-}
+    $('calendarRound').innerHTML='';
+    $('calendarContent').innerHTML='<p class="hint">Nessun calendario disponibile.</p>';
+    return;
+  }
     (mr.data||[]).forEach(x=>saved[`${x.home_team}|${x.away_team}`]=x.score);
 
     const n=Number($('calendarRound').value||rounds[0]?.round);
