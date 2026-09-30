@@ -1038,13 +1038,16 @@ function renderCalendarRoundOptions(){
 
 async function renderCalendar(){
   const rounds=currentLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
- const saved={};
-  if(!rounds.length){
-    $('calendarRound').innerHTML='';
-    $('calendarContent').innerHTML='<p class="hint">Nessun calendario disponibile.</p>';
-    return;
-  }
-    (mr.data||[]).forEach(x=>saved[`${x.home_team}|${x.away_team}`]=x.score);
+ const mr=await db.from('match_results').select('round,home_team,away_team,score').eq('series',activeCalendar);
+const saved={};
+
+ if(!rounds.length){
+ $('calendarRound').innerHTML='';
+$('calendarContent').innerHTML='<p class="hint">Nessun calendario disponibile.</p>';
+ return;
+ }
+
+  (mr.data||[]).forEach(x=>saved[`${x.home_team}|${x.away_team}`]=x.score);
 
     const n=Number($('calendarRound').value||rounds[0]?.round);
   const r=rounds.find(x=>x.round===n)||rounds[0];
