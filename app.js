@@ -120,7 +120,7 @@ if(switcher){
 
     console.log('Fantacalcio cambiato:',currentLeague);
   };
-
+}
   const chooser=$('leagueChooser');
   const list=$('myLeagues');
 
