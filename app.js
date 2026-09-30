@@ -112,7 +112,7 @@ if(switcher){
     localStorage.setItem('currentLeagueId',currentLeagueId);
 
     await load();
-
+renderCalendarRoundOptions();
     document.body.classList.remove('choosing-league');
     document.body.classList.add('league-selected');
 
