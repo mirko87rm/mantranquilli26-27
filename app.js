@@ -75,7 +75,7 @@ async function loadMyLeagues(){
 
   const r=await db
     .from('fantacalcio_members')
-    .select('fantacalcio_id, is_admin, fantacalci(id,name,season)')
+   .select('fantacalcio_id, team_id, is_admin, fantacalci(id,name,season)')
     .eq('user_id',currentUser.id);
 
   if(r.error){
@@ -83,6 +83,43 @@ async function loadMyLeagues(){
     show(r.error.message,true);
     return;
   }
+const switcher=$('leagueSwitcher');
+
+if(switcher){
+  switcher.innerHTML=r.data.map(m=>{
+    const league=m.fantacalci;
+    return `<option value="${league.id}">${esc(league.name)}</option>`;
+  }).join('');
+
+  if(currentLeagueId){
+    switcher.value=currentLeagueId;
+  }
+
+  switcher.onchange=async()=>{
+    const id=switcher.value;
+    const selected=r.data.find(m=>String(m.fantacalcio_id)===String(id));
+
+    if(!selected)return;
+
+    currentLeagueId=selected.fantacalcio_id;
+    currentLeague=selected.fantacalci;
+
+    if(currentProfile){
+      currentProfile.team_id=selected.team_id;
+      currentProfile.is_admin=selected.is_admin;
+    }
+
+    localStorage.setItem('currentLeagueId',currentLeagueId);
+
+    await load();
+
+    document.body.classList.remove('choosing-league');
+    document.body.classList.add('league-selected');
+
+    show('Entrato in '+currentLeague.name,false);
+
+    console.log('Fantacalcio cambiato:',currentLeague);
+  };
 
   const chooser=$('leagueChooser');
   const list=$('myLeagues');
@@ -117,6 +154,9 @@ async function loadMyLeagues(){
       currentLeague=selected.fantacalci;
 
       localStorage.setItem('currentLeagueId',currentLeagueId);
+       if($('leagueSwitcher')){
+  $('leagueSwitcher').value=currentLeagueId;
+}
       await load();
       
       document.body.classList.remove('choosing-league');
