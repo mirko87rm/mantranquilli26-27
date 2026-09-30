@@ -294,7 +294,9 @@ async function load(){
 const t=await db.from('teams').select('id,name').eq('fantacalcio_id',currentLeagueId).order('name'); const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
  teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();
- teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
+$('teamB').innerHTML='';
+$('rosterTeam').innerHTML='';
+  teams.forEach(x=>{ $('teamB').add(new Option(x.name,x.id));$('rosterTeam').add(new Option(x.name,x.id)); });
  renderTradeTeams();
  if(teams.length)$('rosterTeam').selectedIndex=0;
 fill();
@@ -303,6 +305,8 @@ await loadMarket();
 
 if($('saleTeamFilter')){
     $('saleTeamFilter').innerHTML='<option value="">Tutte</option>';
+  $('teamB').innerHTML='';
+$('rosterTeam').innerHTML='';
     teams.forEach(t=>{
         $('saleTeamFilter').add(new Option(t.name,t.id));
     });
