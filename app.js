@@ -112,10 +112,9 @@ if(switcher){
     localStorage.setItem('currentLeagueId',currentLeagueId);
 
     await load();
-renderCalendarRoundOptions();
-    await renderCalendar();
-    document.body.classList.remove('choosing-league');
-    document.body.classList.add('league-selected');
+await renderCalendarRoundOptions();
+document.body.classList.remove('choosing-league');
+document.body.classList.add('league-selected');
 
     show('Entrato in '+currentLeague.name,false);
 
@@ -1030,10 +1029,10 @@ document.querySelectorAll('.stats-tab').forEach(btn=>btn.onclick=()=>{
 
 let activeCalendar='serie';
 
-function renderCalendarRoundOptions(){
+async function renderCalendarRoundOptions(){
   const rounds=currentLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
   $('calendarRound').innerHTML=rounds.map(r=>`<option value="${r.round}">Giornata ${r.round}</option>`).join('');
-  renderCalendar();
+await renderCalendar();
 }
 
 async function renderCalendar(){
