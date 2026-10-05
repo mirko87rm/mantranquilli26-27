@@ -113,6 +113,7 @@ if(switcher){
 
     await load();
 renderCalendarRoundOptions();
+    await renderCalendar();
     document.body.classList.remove('choosing-league');
     document.body.classList.add('league-selected');
 
