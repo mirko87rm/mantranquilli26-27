@@ -166,7 +166,6 @@ renderCalendarRoundOptions();
       chooser.classList.add('hidden');
       $('welcomeHome')?.classList.add('hidden');
 
-      show('Entrato in '+currentLeague.name,false);
 
       console.log('Fantacalcio selezionato:',currentLeague);
     };
