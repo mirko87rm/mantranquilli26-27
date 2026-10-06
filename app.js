@@ -1034,6 +1034,7 @@ let activeCalendar='serie';
 
 async function renderCalendarRoundOptions(){
 const rounds=currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560' ? FANTAURELIA_CAMPIONATO : (CALENDARS[activeCalendar]||[]);
+  $('calendarRound').innerHTML=rounds.map(r=>`<option value="${r.round}">Giornata ${r.round}</option>`).join('');
   await renderCalendar();
 }
 
