@@ -1030,13 +1030,13 @@ document.querySelectorAll('.stats-tab').forEach(btn=>btn.onclick=()=>{
 let activeCalendar='serie';
 
 async function renderCalendarRoundOptions(){
-const rounds=currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
+const rounds=currentLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
   await renderCalendar();
 }
 
 async function renderCalendar(){
   const calendarLeagueId=currentLeagueId;
-const rounds=calendarLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
+const rounds=calendarLeagueId==='48084771-c8ff-4f93-b842-1e7ae4422560' ? [] : (CALENDARS[activeCalendar]||[]);
   const mr=await db.from('match_results').select('round,home_team,away_team,score').eq('series',activeCalendar);
 
   if(calendarLeagueId!==currentLeagueId)return;
