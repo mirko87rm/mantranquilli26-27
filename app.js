@@ -328,8 +328,31 @@ function category(role){
  if(/A|Pc/.test(r))return 'Attaccanti';
  return 'Altri';
 }
+function renderStandingsCompetitionOptions(){
+  const select=$('standingsCompetition');
+  if(!select)return;
+
+  const isFantaurelia=String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
+
+  if(isFantaurelia){
+    select.innerHTML=`
+      <option value="campionato">🏆 Campionato</option>
+      <option value="coppa">🏆 Coppa Italia</option>
+      <option value="superleague">🏆 Super League</option>
+    `;
+  }else{
+    select.innerHTML=`
+      <option value="campionato">🏆 Campionato</option>
+      <option value="champions">🏆 Champions League</option>
+      <option value="europa">🏆 Europa League</option>
+    `;
+  }
+}
 async function load(){
   if(!currentLeagueId)return;
+
+  renderStandingsCompetitionOptions();
+  
 const t=await db.from('teams').select('id,name').eq('fantacalcio_id',currentLeagueId).order('name'); const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
  teams=t.data;players=p.data;$('connection').textContent='Database collegato';await await loadRegisterLeagues();
