@@ -1265,12 +1265,16 @@ function updateStandingsView(){
     standingsTable.closest('.table-wrap').style.display='none';
     if(standingsInfo)standingsInfo.style.display='none';
     renderChampionsStandings();
-  }else{
-    champCard.style.display='none';
-    standingsTable.closest('.table-wrap').style.display='';
-    if(standingsInfo)standingsInfo.style.display='';
-    renderStandings();
-  }
+ }else if(competition==='europa'){
+  champCard.style.display='none';
+  standingsTable.closest('.table-wrap').style.display='none';
+  if(standingsInfo)standingsInfo.style.display='none';
+}else{
+  champCard.style.display='none';
+  standingsTable.closest('.table-wrap').style.display='';
+  if(standingsInfo)standingsInfo.style.display='';
+  renderStandings();
+}
 }
 
 if($('standingsCompetition')){
