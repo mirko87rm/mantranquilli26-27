@@ -1249,32 +1249,160 @@ window.confirmTrade=confirmTrade;
 renderStandings();
 renderChampionsStandings();
 
+function renderCoppaStandings(){
+  const info=$('coppaStandingsInfo');
+  const groups={A:{},B:{}};
+  const rounds=FANTAURELIA_COPPA||[];
+  let completed=0;
+
+  rounds.forEach(r=>{
+    (r.matches||[]).forEach(m=>{
+      const g=String(m.group||'A');
+      if(!groups[g])groups[g]={};
+      if(m.bye)return;
+
+      const sc=scoreParts(m.score);
+      if(!sc)return;
+
+      const hn=String(m.home||'').toUpperCase();
+      const an=String(m.away||'').toUpperCase();
+
+      if(!groups[g][hn]){
+        groups[g][hn]={
+          name:m.home,
+          pg:0,
+          w:0,
+          d:0,
+          l:0,
+          gf:0,
+          ga:0,
+          pts:0
+        };
+      }
+
+      if(!groups[g][an]){
+        groups[g][an]={
+          name:m.away,
+          pg:0,
+          w:0,
+          d:0,
+          l:0,
+          gf:0,
+          ga:0,
+          pts:0
+        };
+      }
+
+      const h=groups[g][hn];
+      const a=groups[g][an];
+
+      h.pg++;
+      a.pg++;
+
+      h.gf+=sc[0];
+      h.ga+=sc[1];
+
+      a.gf+=sc[1];
+      a.ga+=sc[0];
+
+      if(sc[0]>sc[1]){
+        h.w++;
+        h.pts+=3;
+        a.l++;
+      }else if(sc[0]<sc[1]){
+        a.w++;
+        a.pts+=3;
+        h.l++;
+      }else{
+        h.d++;
+        a.d++;
+        h.pts++;
+        a.pts++;
+      }
+
+      completed++;
+    });
+  });
+
+  ['A','B'].forEach(g=>{
+    const rows=Object.values(groups[g]).sort((a,b)=>
+      b.pts-a.pts ||
+      (b.gf-b.ga)-(a.gf-a.ga) ||
+      b.gf-a.gf ||
+      a.name.localeCompare(b.name,'it')
+    );
+
+    const tbody=$('coppaStandings'+g)?.querySelector('tbody');
+
+    if(tbody){
+      tbody.innerHTML=rows.map((r,i)=>`
+        <tr>
+          <td><strong>${i+1}</strong></td>
+          <td><strong>${esc(r.name)}</strong></td>
+          <td>${r.pg}</td>
+          <td>${r.w}</td>
+          <td>${r.d}</td>
+          <td>${r.l}</td>
+          <td>${r.gf}</td>
+          <td>${r.ga}</td>
+          <td>${r.gf-r.ga>0?'+':''}${r.gf-r.ga}</td>
+          <td><strong>${r.pts}</strong></td>
+        </tr>
+      `).join('')||'<tr><td colspan="10">Nessun risultato</td></tr>';
+    }
+  });
+
+  if(info){
+    info.textContent=completed
+      ? `Aggiornata con ${completed} partite disputate.`
+      : 'Nessun risultato inserito nella Coppa Italia.';
+  }
+}
 function updateStandingsView(){
   const competition=$('standingsCompetition')?.value||'campionato';
   const champCard=$('championsStandingsCard');
+  const coppaCard=$('coppaStandingsCard');
   const standingsTable=$('standingsTable');
   const standingsInfo=$('standingsInfo');
 
-  if(!champCard||!standingsTable)return;
+  if(!champCard||!coppaCard||!standingsTable)return;
 
-  const isChampions=competition==='champions' &&
-    String(currentLeague?.name||'').toUpperCase()!=='FANTAURELIA';
+  const isFantaurelia=
+    String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
+
+  const isChampions=
+    competition==='champions' && !isFantaurelia;
+
+  const isCoppa=
+    competition==='coppa' && isFantaurelia;
 
   if(isChampions){
     champCard.style.display='';
+    coppaCard.style.display='none';
     standingsTable.closest('.table-wrap').style.display='none';
     if(standingsInfo)standingsInfo.style.display='none';
     renderChampionsStandings();
- }else if(competition==='europa'){
-  champCard.style.display='none';
-  standingsTable.closest('.table-wrap').style.display='none';
-  if(standingsInfo)standingsInfo.style.display='none';
-}else{
-  champCard.style.display='none';
-  standingsTable.closest('.table-wrap').style.display='';
-  if(standingsInfo)standingsInfo.style.display='';
-  renderStandings();
-}
+
+  }else if(isCoppa){
+    champCard.style.display='none';
+    coppaCard.style.display='';
+    standingsTable.closest('.table-wrap').style.display='none';
+    if(standingsInfo)standingsInfo.style.display='none';
+    renderCoppaStandings();
+
+  }else if(competition==='europa'){
+    champCard.style.display='none';
+    coppaCard.style.display='none';
+    standingsTable.closest('.table-wrap').style.display='none';
+    if(standingsInfo)standingsInfo.style.display='none';
+
+  }else{
+    champCard.style.display='none';
+    coppaCard.style.display='none';
+    standingsTable.closest('.table-wrap').style.display='';
+    if(standingsInfo)standingsInfo.style.display='';
+    renderStandings();
+  }
 }
 
 if($('standingsCompetition')){
