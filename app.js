@@ -1248,6 +1248,36 @@ renderCalendarRoundOptions();
 window.confirmTrade=confirmTrade;
 renderStandings();
 renderChampionsStandings();
+
+function updateStandingsView(){
+  const competition=$('standingsCompetition')?.value||'campionato';
+  const champCard=$('championsStandingsCard');
+  const standingsTable=$('standingsTable');
+  const standingsInfo=$('standingsInfo');
+
+  if(!champCard||!standingsTable)return;
+
+  const isChampions=competition==='champions' &&
+    String(currentLeague?.name||'').toUpperCase()!=='FANTAURELIA';
+
+  if(isChampions){
+    champCard.style.display='';
+    standingsTable.closest('.table-wrap').style.display='none';
+    if(standingsInfo)standingsInfo.style.display='none';
+    renderChampionsStandings();
+  }else{
+    champCard.style.display='none';
+    standingsTable.closest('.table-wrap').style.display='';
+    if(standingsInfo)standingsInfo.style.display='';
+    renderStandings();
+  }
+}
+
+if($('standingsCompetition')){
+  $('standingsCompetition').onchange=updateStandingsView;
+}
+
+updateStandingsView();
 renderStatistics();
 initAuth();
 load();
