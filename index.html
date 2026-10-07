@@ -167,8 +167,93 @@
 <section class="card"><h2>Calendario</h2><div class="calendar-tabs"><button class="calendar-tab active" data-cal="serie">Serie A</button><button class="calendar-tab" data-cal="coppa">Coppa Italia</button><button class="calendar-tab" data-cal="champions">Champions League</button></div><label>Giornata<select id="calendarRound"></select></label><div id="calendarContent"></div></section></section>
 
 <section id="section-classifica" class="page-section">
-<section class="card"><h2>Classifica Serie A</h2><p id="standingsInfo" class="hint"></p><div class="table-wrap"><table id="standingsTable"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Serie A.</p></section>
-<section class="card"><h2>Classifica Champions League</h2><p id="champStandingsInfo" class="hint"></p><div class="champ-standings-grid"><div><h3>Girone A</h3><div class="table-wrap"><table id="champStandingsA"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div><div><h3>Girone B</h3><div class="table-wrap"><table id="champStandingsB"><thead><tr><th>#</th><th>Squadra</th><th>PG</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Pt</th></tr></thead><tbody></tbody></table></div></div></div><p class="hint standings-note">Sistema punti: 3 punti vittoria, 1 pareggio, 0 sconfitta. La classifica è calcolata automaticamente dai risultati presenti nel Calendario Champions League.</p></section>
+<section class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap">
+    <h2 style="margin:0">Classifica</h2>
+    <label style="display:flex;align-items:center;gap:8px;font-weight:600">
+      Competizione
+      <select id="standingsCompetition">
+        <option value="campionato">🏆 Campionato</option>
+        <option value="coppa">🏆 Coppa Italia</option>
+        <option value="superleague">🏆 Super League</option>
+      </select>
+    </label>
+  </div>
+
+  <p id="standingsInfo" class="hint"></p>
+
+  <div class="table-wrap">
+    <table id="standingsTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Squadra</th>
+          <th>PG</th>
+          <th>V</th>
+          <th>N</th>
+          <th>P</th>
+          <th>GF</th>
+          <th>GS</th>
+          <th>DR</th>
+          <th>Pt</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="championsStandingsCard" class="card">
+  <h2>Classifica Champions League</h2>
+  <p id="champStandingsInfo" class="hint"></p>
+  <div class="champ-standings-grid">
+    <div>
+      <h3>Girone A</h3>
+      <div class="table-wrap">
+        <table id="champStandingsA">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Squadra</th>
+              <th>PG</th>
+              <th>V</th>
+              <th>N</th>
+              <th>P</th>
+              <th>GF</th>
+              <th>GS</th>
+              <th>DR</th>
+              <th>Pt</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3>Girone B</h3>
+      <div class="table-wrap">
+        <table id="champStandingsB">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Squadra</th>
+              <th>PG</th>
+              <th>V</th>
+              <th>N</th>
+              <th>P</th>
+              <th>GF</th>
+              <th>GS</th>
+              <th>DR</th>
+              <th>Pt</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
 </section>
 
 <section id="section-scambi" class="page-section">
