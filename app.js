@@ -1035,8 +1035,7 @@ async function renderStandings(){
 
     let completed=0;
 
-    (mr.data||[]).forEach(m=>{
-        if(!m.score)return;
+(currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560'?FANTAURELIA_CAMPIONATO.flatMap(r=>r.matches.filter(m=>m.home&&m.away).map(m=>({home_team:m.home,away_team:m.away,score:m.score}))):(mr.data||[])).forEach(m=>{        if(!m.score)return;
 
         const sc=scoreParts(m.score);
         if(!sc)return;
