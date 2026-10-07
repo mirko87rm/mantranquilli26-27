@@ -362,7 +362,7 @@ $('rosterTeam').innerHTML='';
  renderTradeTeams();
  if(teams.length)$('rosterTeam').selectedIndex=0;
 fill();
-renderStandings();
+updateStandingsView();
 await loadMarket();
 
 if($('saleTeamFilter')){
