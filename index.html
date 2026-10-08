@@ -137,28 +137,34 @@
 
 <section id="section-home" class="page-section active-section">
 
-<div id="welcomeHome" class="welcome-home">
-    <div class="welcome-content">
-      <h1>FANTACALCIO 2026/2027</h1>
+<div class="home-dashboard">
 
-      <p>Benvenuto nel mondo del Fantacalcio</p>
-
-      <button id="homeLoginBtn" class="home-login-btn">
-        🔐 Accedi
-      </button>
-    </div>
-
+  <div class="home-card">
+    <div class="home-card-icon">📅</div>
+    <h2>Prossima giornata</h2>
+    <p id="homeNextRound">Caricamento...</p>
+    <div id="homeNextMatches"></div>
   </div>
 
-  <div id="leagueChooser" class="league-chooser hidden">
-    <h2>Scegli il tuo Fantacalcio</h2>
-    <p>Seleziona il Fantacalcio al quale vuoi accedere.</p>
-
-    <div id="myLeagues">
-      Caricamento...
-    </div>
+  <div class="home-card">
+    <div class="home-card-icon">🏆</div>
+    <h2>Classifica</h2>
+    <div id="homeStandingsPreview">Caricamento...</div>
   </div>
 
+  <div class="home-card">
+    <div class="home-card-icon">📰</div>
+    <h2>Ultime novità</h2>
+    <div id="homeNews">Nessuna novità.</div>
+  </div>
+
+  <div class="home-card">
+    <div class="home-card-icon">🔄</div>
+    <h2>Scambi</h2>
+    <div id="homeTrades">Caricamento...</div>
+  </div>
+
+</div>
 </section>
 
 <section id="section-rose" class="page-section">
