@@ -1358,15 +1358,65 @@ function renderCoppaStandings(){
       : 'Nessun risultato inserito nella Coppa Italia.';
   }
 }
+
+function renderSuperLeagueStandings(){
+  const tbody=$('superLeagueStandings')?.querySelector('tbody');
+  const info=$('superLeagueStandingsInfo');
+
+  if(!tbody)return;
+
+  const data=[
+    {name:'Sparta',g1:25,g2:1},
+    {name:'Cerenova United',g1:20,g2:6},
+    {name:'Beata Quartina FC',g1:17,g2:8},
+    {name:'FcMajpecabbu',g1:14,g2:3},
+    {name:'As Riomma',g1:12,g2:5},
+    {name:'AS Nik-Otina',g1:12,g2:17},
+    {name:'FC SPECCHIOLLA',g1:8,g2:3},
+    {name:'FORTITUDO',g1:7,g2:25},
+    {name:'Dybala Coi Lupi',g1:6,g2:4},
+    {name:'ASL Rozio',g1:6,g2:8},
+    {name:'DIVANO KIEV',g1:4,g2:14},
+    {name:'Jamu Lupi',g1:4,g2:12},
+    {name:'BERLUSCA DORTMUND',g1:2,g2:25},
+    {name:'Salernitanna',g1:1,g2:12}
+  ];
+
+  data.forEach(r=>{
+    r.total=r.g1+r.g2;
+  });
+
+  data.sort((a,b)=>
+    b.total-a.total ||
+    b.g2-a.g2 ||
+    b.g1-a.g1 ||
+    a.name.localeCompare(b.name,'it')
+  );
+
+  tbody.innerHTML=data.map((r,i)=>`
+    <tr>
+      <td><strong>${i+1}</strong></td>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${r.g1}</td>
+      <td>${r.g2}</td>
+      <td><strong>${r.total}</strong></td>
+    </tr>
+  `).join('');
+
+  if(info){
+    info.textContent='Aggiornata con 2 giornate disputate.';
+  }
+}
 function updateStandingsView(){
   const competition=$('standingsCompetition')?.value||'campionato';
   const champCard=$('championsStandingsCard');
   const coppaCard=$('coppaStandingsCard');
+  const superLeagueCard=$('superLeagueStandingsCard');
   const standingsTable=$('standingsTable');
   const standingsInfo=$('standingsInfo');
 
-  if(!champCard||!coppaCard||!standingsTable)return;
-
+if(!champCard||!coppaCard||!superLeagueCard||!standingsTable)return;
+  
   const isFantaurelia=
     String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
 
@@ -1375,6 +1425,9 @@ function updateStandingsView(){
 
   const isCoppa=
     competition==='coppa' && isFantaurelia;
+
+  const isSuperLeague=
+  competition==='superleague' && isFantaurelia;
 
   if(isChampions){
     champCard.style.display='';
@@ -1390,6 +1443,14 @@ function updateStandingsView(){
     if(standingsInfo)standingsInfo.style.display='none';
     renderCoppaStandings();
 
+  }else if(isSuperLeague){
+  champCard.style.display='none';
+  coppaCard.style.display='none';
+  standingsTable.closest('.table-wrap').style.display='none';
+  if(standingsInfo)standingsInfo.style.display='none';
+  superLeagueCard.style.display='';
+  renderSuperLeagueStandings();
+  
   }else if(competition==='europa'){
     champCard.style.display='none';
     coppaCard.style.display='none';
