@@ -1366,30 +1366,29 @@ function renderSuperLeagueStandings(){
   if(!tbody)return;
 
   const data=[
-    {name:'Sparta',g1:25,g2:1},
-    {name:'Cerenova United',g1:20,g2:6},
-    {name:'Beata Quartina FC',g1:17,g2:8},
-    {name:'FcMajpecabbu',g1:14,g2:3},
-    {name:'As Riomma',g1:12,g2:5},
-    {name:'AS Nik-Otina',g1:12,g2:17},
-    {name:'FC SPECCHIOLLA',g1:8,g2:3},
-    {name:'FORTITUDO',g1:7,g2:25},
-    {name:'Dybala Coi Lupi',g1:6,g2:4},
-    {name:'ASL Rozio',g1:6,g2:8},
-    {name:'DIVANO KIEV',g1:4,g2:14},
-    {name:'Jamu Lupi',g1:4,g2:12},
-    {name:'BERLUSCA DORTMUND',g1:2,g2:25},
-    {name:'Salernitanna',g1:1,g2:12}
+    {name:'Sparta',g:[25,1]},
+    {name:'Cerenova United',g:[20,6]},
+    {name:'Beata Quartina FC',g:[17,8]},
+    {name:'FcMajpecabbu',g:[14,3]},
+    {name:'As Riomma',g:[12,5]},
+    {name:'AS Nik-Otina',g:[12,17]},
+    {name:'FC SPECCHIOLLA',g:[8,3]},
+    {name:'FORTITUDO',g:[7,25]},
+    {name:'Dybala Coi Lupi',g:[6,4]},
+    {name:'ASL Rozio',g:[6,8]},
+    {name:'DIVANO KIEV',g:[4,14]},
+    {name:'Jamu Lupi',g:[4,12]},
+    {name:'BERLUSCA DORTMUND',g:[2,25]},
+    {name:'Salernitanna',g:[1,12]}
   ];
 
   data.forEach(r=>{
-    r.total=r.g1+r.g2;
+    while(r.g.length<16)r.g.push(0);
+    r.total=r.g.reduce((sum,v)=>sum+v,0);
   });
 
   data.sort((a,b)=>
     b.total-a.total ||
-    b.g2-a.g2 ||
-    b.g1-a.g1 ||
     a.name.localeCompare(b.name,'it')
   );
 
@@ -1397,14 +1396,13 @@ function renderSuperLeagueStandings(){
     <tr>
       <td><strong>${i+1}</strong></td>
       <td><strong>${esc(r.name)}</strong></td>
-      <td>${r.g1}</td>
-      <td>${r.g2}</td>
+      ${r.g.map(v=>`<td>${v||''}</td>`).join('')}
       <td><strong>${r.total}</strong></td>
     </tr>
   `).join('');
 
   if(info){
-    info.textContent='Aggiornata con 2 giornate disputate.';
+    info.textContent='Formula 1: 2 giornate disputate su 16.';
   }
 }
 function updateStandingsView(){
