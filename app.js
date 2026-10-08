@@ -490,7 +490,7 @@ function renderRegolamento(){
 
   if(isFantaurelia){
     mantranquilli.style.display='none';
-    fantaurelia.style.display='';
+fantaurelia.style.display='block';
     title.textContent='📖 Regolamento FANTAURELIA';
     intro.textContent='Regolamento ufficiale della lega FANTAURELIA.';
   }else{
