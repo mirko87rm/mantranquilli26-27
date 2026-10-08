@@ -399,3 +399,120 @@ body.choosing-league .league-card span {
   margin: 0;
   font-size: 1rem;
 }
+
+/* ===== FANTAHUB HOME DASHBOARD ===== */
+
+#section-home {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: calc(100vh - 100px);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.05) 0%,
+      rgba(0,0,0,.15) 45%,
+      rgba(0,0,0,.65) 100%
+    ),
+    url("sfondo-fantahub.png") center center / cover no-repeat;
+}
+
+.home-dashboard {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0 22px 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.home-card {
+  min-height: 330px;
+  padding: 18px;
+  border-radius: 18px;
+  box-sizing: border-box;
+  color: #fff;
+
+  background: rgba(5, 10, 18, .88);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 12px 35px rgba(0,0,0,.55);
+
+  backdrop-filter: blur(6px);
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.7);
+}
+
+.home-card-icon {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  font-size: 30px;
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+.home-card h2 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.home-card p {
+  margin: 0;
+  color: #ddd;
+}
+
+/* Blu - Prossima giornata */
+.home-card:nth-child(1) {
+  border-color: #159cff;
+  box-shadow:
+    0 0 0 1px rgba(21,156,255,.2),
+    0 12px 35px rgba(0,80,180,.35);
+}
+
+/* Verde - Classifica */
+.home-card:nth-child(2) {
+  border-color: #24d45a;
+  box-shadow:
+    0 0 0 1px rgba(36,212,90,.2),
+    0 12px 35px rgba(0,130,45,.3);
+}
+
+/* Oro - Ultime novità */
+.home-card:nth-child(3) {
+  border-color: #ffb300;
+  box-shadow:
+    0 0 0 1px rgba(255,179,0,.2),
+    0 12px 35px rgba(180,100,0,.3);
+}
+
+/* Viola - Scambi */
+.home-card:nth-child(4) {
+  border-color: #b84cff;
+  box-shadow:
+    0 0 0 1px rgba(184,76,255,.2),
+    0 12px 35px rgba(120,0,180,.3);
+}
