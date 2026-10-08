@@ -315,20 +315,7 @@ function setupNavigation(){
 const target=$('section-'+btn.dataset.section);
 if(target)target.classList.add('active-section');
 
-if(btn.dataset.section==='regolamento'){
-  const isFantaurelia=currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560';
 
-  const regolamentoMantranquilli=$('regolamentoMantranquilli');
-  const regolamentoFantaurelia=$('regolamentoFantaurelia');
-
-  if(regolamentoMantranquilli){
-    regolamentoMantranquilli.parentElement.style.display=isFantaurelia?'none':'';
-  }
-
-  if(regolamentoFantaurelia){
-    regolamentoFantaurelia.style.display=isFantaurelia?'':'none';
-  }
-}
    $('sidebar').classList.remove('open');
    window.scrollTo({top:0,behavior:'smooth'});
  });
