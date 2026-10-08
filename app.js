@@ -316,16 +316,16 @@ const target=$('section-'+btn.dataset.section);
 if(target)target.classList.add('active-section');
 
 if(btn.dataset.section==='regolamento'){
-  const isFantaurelia=String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
+  const isFantaurelia=currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560';
+
+  const regolamentoMantranquilli=$('regolamentoMantranquilli');
   const regolamentoFantaurelia=$('regolamentoFantaurelia');
 
-  if(regolamentoFantaurelia){
-    Array.from(target.children).forEach(el=>{
-      if(el!==regolamentoFantaurelia){
-        el.style.display=isFantaurelia?'none':'';
-      }
-    });
+  if(regolamentoMantranquilli){
+    regolamentoMantranquilli.parentElement.style.display=isFantaurelia?'none':'';
+  }
 
+  if(regolamentoFantaurelia){
     regolamentoFantaurelia.style.display=isFantaurelia?'':'none';
   }
 }
