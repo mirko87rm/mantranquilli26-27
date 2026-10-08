@@ -414,8 +414,8 @@ body.choosing-league .league-card span {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-
+ justify-content: center;
+  
   background:
     linear-gradient(
       to bottom,
