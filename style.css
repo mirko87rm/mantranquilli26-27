@@ -406,7 +406,9 @@ body.choosing-league .league-card span {
   position: relative;
   width: 100%;
   max-width: none;
-  min-height: calc(100vh - 100px);
+  height: calc(100vh - 100px);
+  min-height: 0;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -438,7 +440,7 @@ body.choosing-league .league-card span {
 }
 
 .home-card {
-  min-height: 330px;
+  min-height: 270px;
   padding: 18px;
   border-radius: 18px;
   box-sizing: border-box;
