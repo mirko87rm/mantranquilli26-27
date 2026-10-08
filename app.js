@@ -480,9 +480,7 @@ function getRegolamentoFantaurelia(){
 }
 
 function renderRegolamento(){
-  const isFantaurelia=
-    String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
-
+ const isFantaurelia=currentLeagueId==='48084771-cf8f-4f93-b842-1e7ae4422560';
   const mantranquilli=$('regolamentoMantranquilli');
   const fantaurelia=$('regolamentoFantaurelia');
   const title=$('regolamentoTitle');
