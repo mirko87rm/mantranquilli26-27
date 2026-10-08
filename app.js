@@ -349,6 +349,132 @@ function renderStandingsCompetitionOptions(){
   }
 }
 
+function getRegolamentoFantaurelia(){
+  return `
+    <details open>
+      <summary>1. Quote</summary>
+      <ul>
+        <li><strong>Quota Fantacalcio:</strong> 150€</li>
+        <li>Prima rata: 75€ da consegnare entro il giorno dell'asta iniziale.</li>
+        <li>Qualora un FantAllenatore non portasse la suddetta cifra riceverà una penalità di 100 crediti prima dell'inizio dell'asta, i crediti non verranno restituiti.</li>
+        <li>Seconda rata: altri 75€, con termine ultimo il giorno prima dell'asta di riparazione.</li>
+        <li>In caso di mancato pagamento della seconda rata: -1 punto in classifica ogni 5€ mancanti e svincolo del giocatore più pagato restituendo metà dei crediti spesi.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>2. Asta</summary>
+      <ul>
+        <li><strong>Crediti iniziali:</strong> 500 FM all'asta iniziale + 100 FM all'asta di riparazione.</li>
+        <li><strong>Base d'asta:</strong> 1 credito.</li>
+        <li>Il detentore dello scudetto Serie A inizia l'asta chiamando il primo giocatore per ogni ruolo, nell'ordine portieri, difensori, centrocampisti, attaccanti.</li>
+        <li>Gli altri FantAllenatori procederanno in senso orario.</li>
+        <li>In caso di sforamento dei crediti al momento dell'acquisto, il giocatore verrà rimesso all'asta con base di partenza 1 e l'asta verrà ripetuta.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>3. Mercato</summary>
+      <ul>
+        <li><strong>Aste:</strong> 2, asta iniziale e asta di riparazione post mercato invernale.</li>
+        <li><strong>Svincoli:</strong> a buste chiuse in app con scadenza un'ora prima dell'inizio dell'asta di riparazione.</li>
+        <li>Se un giocatore parte all'estero, si riprendono tutti i FM spesi.</li>
+        <li>Se un giocatore rimane in Italia o finisce la stagione per infortunio, si riprende metà dei FM spesi, divisi per eccesso.</li>
+        <li><strong>Mercato scambi:</strong> massimo 6 giocatori nelle sessioni previste, con ufficialità tramite il gruppo WhatsApp “SCAMBI” da parte di uno dei due FantAllenatori oppure di un Admin.</li>
+        <li>Durante la pausa nazionale di marzo il limite è di massimo 4 giocatori.</li>
+        <li>Per il mercato chiuso, se un giocatore viene ceduto all'estero, può essere sostituito con uno dalla lista svincolati di valore pari o inferiore.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>4. Impostazioni generali per le competizioni</summary>
+      <ul>
+        <li><strong>Rosa:</strong> 3 portieri, 8 difensori, 8 centrocampisti, 6 attaccanti.</li>
+        <li><strong>Panchina:</strong> 2 portieri, 4 difensori, 4 centrocampisti, 3 attaccanti.</li>
+        <li><strong>Sostituzioni:</strong> illimitate con malus. Fino alla 5ª nessun malus; dalla 6ª sostituzione con voto viene applicato 1 punto di malus, dalla 7ª 2 punti e così via.</li>
+        <li><strong>Modalità Switch:</strong> ON.</li>
+        <li><strong>Riserva d'ufficio:</strong> NO.</li>
+        <li><strong>Moduli consentiti:</strong> 3-5-2; 3-4-3; 4-5-1; 4-4-2; 4-3-3; 5-3-2; 5-4-1.</li>
+        <li>La formazione deve essere inserita prima del fischio d'inizio dell'anticipo di Serie A.</li>
+        <li>In caso di formazione non schierata in tempo, viene recuperata la precedente dal sistema.</li>
+        <li><strong>Multe:</strong> prima multa 5€; dalla seconda 10€.</li>
+        <li>Per le partite rinviate si attendono i recuperi sino all'inizio della giornata successiva di Serie A; se non vengono disputate in tempo, si procede con il 6 politico.</li>
+        <li>Per le partite sospese si attende il recupero sino all'inizio della giornata successiva.</li>
+        <li><strong>Bonus-malusi:</strong> imbattibilità portiere +1; gol portiere +5; gol difensore +3; gol centrocampista e attaccante +3; assist +1; autogol -2; rigore segnato +3; rigore parato +3; rigore sbagliato -3; ammonizione -0,5; espulsione -1.</li>
+        <li><strong>Soglia gol:</strong> primo gol dalla soglia di 66 punti, ogni 5 punti scatta il gol successivo.</li>
+        <li><strong>Modificatore difesa:</strong> sì, a 3 fasce, secondo il regolamento Fantagazzetta.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>5. Campionato di Serie A</summary>
+      <ul>
+        <li><strong>Durata:</strong> dalla prima giornata utile di Serie A dopo l'asta estiva alla 38ª giornata di Serie A.</li>
+        <li><strong>Criteri di calcolo della classifica:</strong> punti, somma punti totale, differenza reti, gol fatti, gol subiti, classifica avulsa.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>6. Coppa Italia</summary>
+      <ul>
+        <li><strong>Qualifiche:</strong> 2 gironi da 7 squadre, andata e ritorno.</li>
+        <li>Dalla 1ª alla 6ª classificata si ottiene la qualificazione alla fase successiva; la 7ª viene eliminata.</li>
+        <li><strong>Mundialito:</strong> girone all'italiana di sola andata.</li>
+        <li>1ª e 4ª si qualificano direttamente alla fase finale; dalla 5ª alla 12ª avanzano ai playoff.</li>
+        <li><strong>Playoff:</strong> 5ª vs 12ª, 6ª vs 11ª, 7ª vs 10ª, 8ª vs 9ª.</li>
+        <li><strong>Fase finale:</strong> quarti, semifinali e finale a scontro diretto.</li>
+        <li><strong>Criteri fasi a gruppi:</strong> punti, somma punti totale, differenza reti, gol fatti, gol subiti, classifica avulsa.</li>
+        <li><strong>Criteri fasi ad eliminazione:</strong> incontri, supplementari e rigori, somma punti, ex criterio UEFA dei gol in trasferta.</li>
+        <li><strong>Giornate gironi:</strong> dalla 4ª alla 17ª di Serie A.</li>
+        <li><strong>Mundialito:</strong> dalla 18ª alla 28ª di Serie A.</li>
+        <li><strong>Playoff:</strong> andata 29ª, ritorno 30ª di Serie A.</li>
+        <li><strong>Quarti:</strong> andata 31ª, ritorno 32ª di Serie A.</li>
+        <li><strong>Semifinale:</strong> andata 33ª, ritorno 34ª di Serie A.</li>
+        <li><strong>Finale:</strong> 35ª giornata di Serie A.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>7. Super League</summary>
+      <ul>
+        <li>La qualificazione è una <strong>Formula 1 a 14 squadre</strong> fino alla fine del girone di andata della Serie A.</li>
+        <li>La 1ª e la 2ª classificata si qualificano direttamente alla fase finale.</li>
+        <li>Dalla 3ª alla 10ª classificata si sfidano nei playoff a gironi.</li>
+        <li>Dalla 11ª alla 14ª classificata vengono eliminate.</li>
+        <li><strong>Playoff a girone:</strong> girone a 4 squadre, andata e ritorno. Le posizioni dispari della Formula 1 vanno nel primo girone, quelle pari nel secondo.</li>
+        <li>La 1ª e la 2ª classificata di ciascun girone passano alla fase eliminatoria.</li>
+        <li>La 1ª del Girone Dispari sfida la 2ª del Girone Pari.</li>
+        <li>La 1ª del Girone Pari sfida la 2ª del Girone Dispari.</li>
+        <li><strong>Semifinali:</strong> la 1ª di Formula 1 sfida l'uscente del 2º scontro; la 2ª di Formula 1 sfida l'uscente del 1º scontro.</li>
+        <li><strong>Finale:</strong> scontro diretto.</li>
+        <li><strong>Criteri fasi a gruppi:</strong> punti, somma punti totale, differenza reti, gol fatti, gol subiti, classifica avulsa.</li>
+        <li><strong>Criteri eliminatorie e playoff:</strong> incontri, supplementari e rigori, somma punti, ex criterio UEFA dei gol in trasferta.</li>
+        <li><strong>Formula 1:</strong> giornate 1-16 corrispondenti alle giornate 4-19 di Serie A.</li>
+        <li><strong>Playoff a girone:</strong> giornate 1-6 corrispondenti alle giornate 21-26 di Serie A.</li>
+        <li><strong>Eliminatorie playoff:</strong> andata 28ª, ritorno 29ª di Serie A.</li>
+        <li><strong>Semifinali Super League:</strong> andata 31ª, ritorno 32ª di Serie A.</li>
+        <li><strong>Finale Super League:</strong> 34ª giornata di Serie A.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>9. Premi</summary>
+      <ul>
+        <li><strong>Campionato:</strong> 1° posto 750€ + eventuali multe; 2° posto 450€; 3° posto 150€.</li>
+        <li><strong>Super League:</strong> vincitore 450€.</li>
+        <li><strong>Coppa Italia:</strong> vincitore 150€.</li>
+        <li><strong>Miglior punteggio stagionale in una partita di Serie A:</strong> 150€.</li>
+      </ul>
+    </details>
+
+    <p class="hint">
+      A seguito del decreto “REGOLAMENTO DEL FANTACALCIO”, la direzione s'impegna a far rispettare meticolosamente ogni regola nel rispetto di ogni partecipante e del fantacalcio.
+    </p>
+    <p class="hint"><strong>IN FEDE, L'AMMINISTRAZIONE</strong></p>
+    <p class="hint">P.S. BUON 65.5 A TUTTI</p>
+  `;
+}
+
 function renderRegolamento(){
   const isFantaurelia=
     String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
@@ -363,6 +489,7 @@ function renderRegolamento(){
   if(isFantaurelia){
     mantranquilli.style.display='none';
     fantaurelia.style.display='';
+    fantaurelia.innerHTML=getRegolamentoFantaurelia();
     title.textContent='📖 Regolamento FANTAURELIA';
     intro.textContent='Regolamento ufficiale della lega FANTAURELIA.';
   }else{
