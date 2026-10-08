@@ -87,6 +87,47 @@ url("sfondo-fantahub.png") center center / cover no-repeat;
   box-shadow: 0 15px 50px rgba(0,0,0,.35);
 }
 
+.home-dashboard {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.home-card {
+  min-height: 260px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 8px 25px rgba(0,0,0,.08);
+  box-sizing: border-box;
+}
+
+.home-card-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.home-card h2 {
+  margin: 0 0 15px;
+  font-size: 1.25rem;
+}
+
+.home-card p {
+  margin: 0;
+}
+
+.home-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
+  transition: .2s ease;
+}
+
 .welcome-content h1 {
   margin: 0 0 15px;
   font-size: clamp(2.2rem, 6vw, 4.5rem);
