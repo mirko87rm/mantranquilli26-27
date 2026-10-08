@@ -590,3 +590,15 @@ body.league-selected .home-dashboard {
 
   box-sizing: border-box;
 }
+
+/* ===== HEADER FANTAHUB ===== */
+
+header {
+  min-height: 110px;
+  box-sizing: border-box;
+}
+
+.fantahub-logo {
+  height: 100px;
+  width: 100px;
+}
