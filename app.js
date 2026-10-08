@@ -312,7 +312,23 @@ function setupNavigation(){
    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
    document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active-section'));
    btn.classList.add('active');
-   const target=$('section-'+btn.dataset.section); if(target)target.classList.add('active-section');
+const target=$('section-'+btn.dataset.section);
+if(target)target.classList.add('active-section');
+
+if(btn.dataset.section==='regolamento'){
+  const isFantaurelia=String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
+  const regolamentoFantaurelia=$('regolamentoFantaurelia');
+
+  if(regolamentoFantaurelia){
+    Array.from(target.children).forEach(el=>{
+      if(el!==regolamentoFantaurelia){
+        el.style.display=isFantaurelia?'none':'';
+      }
+    });
+
+    regolamentoFantaurelia.style.display=isFantaurelia?'':'none';
+  }
+}
    $('sidebar').classList.remove('open');
    window.scrollTo({top:0,behavior:'smooth'});
  });
