@@ -535,3 +535,58 @@ body.league-selected #section-home {
   padding: 0;
   box-sizing: border-box;
 }
+
+/* ===== FIX DEFINITIVO HOME FANTAHUB ===== */
+
+html,
+body {
+  overflow: hidden;
+}
+
+body.league-selected {
+  overflow: hidden !important;
+}
+
+body.league-selected .layout {
+  height: calc(100vh - 100px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.league-selected main {
+  height: 100%;
+  min-height: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+body.league-selected #section-home {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden;
+
+  display: block;
+}
+
+body.league-selected .home-dashboard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 70px;
+
+  width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding: 0 22px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+
+  box-sizing: border-box;
+}
