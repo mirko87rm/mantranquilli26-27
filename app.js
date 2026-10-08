@@ -348,10 +348,36 @@ function renderStandingsCompetitionOptions(){
     `;
   }
 }
+
+function renderRegolamento(){
+  const isFantaurelia=
+    String(currentLeague?.name||'').toUpperCase()==='FANTAURELIA';
+
+  const mantranquilli=$('regolamentoMantranquilli');
+  const fantaurelia=$('regolamentoFantaurelia');
+  const title=$('regolamentoTitle');
+  const intro=$('regolamentoIntro');
+
+  if(!mantranquilli||!fantaurelia||!title||!intro)return;
+
+  if(isFantaurelia){
+    mantranquilli.style.display='none';
+    fantaurelia.style.display='';
+    title.textContent='📖 Regolamento FANTAURELIA';
+    intro.textContent='Regolamento ufficiale della lega FANTAURELIA.';
+  }else{
+    mantranquilli.style.display='';
+    fantaurelia.style.display='none';
+    title.textContent='📖 Regolamento MANTRANQUILLI 26/27';
+    intro.textContent='Regolamento ufficiale della lega.';
+  }
+}
+
 async function load(){
   if(!currentLeagueId)return;
 
   renderStandingsCompetitionOptions();
+  renderRegolamento();
   
 const t=await db.from('teams').select('id,name').eq('fantacalcio_id',currentLeagueId).order('name'); const p=await db.from('players').select('id,name,role,team_id').order('name');
  if(t.error||p.error){$('connection').textContent='Errore database';$('feedback').textContent=(t.error||p.error).message;return}
