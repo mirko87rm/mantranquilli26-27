@@ -34,7 +34,7 @@ main{
 .nav-item:hover{background:#2b2b2b;color:#fff}.nav-item.active{background:#fff;color:#111}.nav-item.active:hover{background:#fff;color:#111}
 main{flex:1;max-width:none;margin:25px auto;padding:0 24px;width:100%}
 .page-section{display:none;max-width:1100px;margin:0 auto}.page-section.active-section{display:block}
-.fantahub-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:90px;width:90px;object-fit:contain}
+.fantahub-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:125px;width:125px;object-fit:contain}
 .hero-card{background:linear-gradient(135deg,#111,#2c2c2c);color:#fff}.hero-card p{color:#ccc}
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}.home-grid div{background:#ffffff14;border:1px solid #ffffff1c;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px}.home-grid span{font-size:18px;font-weight:800}
 .empty-card{text-align:center;padding:55px 25px}.big-icon{font-size:42px;margin-bottom:10px}
