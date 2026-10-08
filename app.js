@@ -103,7 +103,8 @@ if(switcher){
 
     currentLeagueId=selected.fantacalcio_id;
     currentLeague=selected.fantacalci;
-
+renderRegolamento();
+    
     if(currentProfile){
       currentProfile.team_id=selected.team_id;
       currentProfile.is_admin=selected.is_admin;
@@ -152,7 +153,7 @@ document.body.classList.add('league-selected');
 
       currentLeagueId=selected.fantacalcio_id;
       currentLeague=selected.fantacalci;
-
+renderRegolamento();
       localStorage.setItem('currentLeagueId',currentLeagueId);
        if($('leagueSwitcher')){
   $('leagueSwitcher').value=currentLeagueId;
