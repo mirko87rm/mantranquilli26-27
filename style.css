@@ -351,3 +351,51 @@ body.choosing-league .league-card span {
     grid-template-columns: 1fr;
   }
 }
+
+/* HOME FANTAHUB - DASHBOARD */
+#section-home {
+  max-width: none;
+  width: 100%;
+}
+
+.home-dashboard {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 35px 30px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  box-sizing: border-box;
+}
+
+.home-card {
+  min-height: 300px;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e1e1e1;
+  box-shadow: 0 10px 30px rgba(0,0,0,.10);
+  box-sizing: border-box;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 35px rgba(0,0,0,.15);
+}
+
+.home-card-icon {
+  font-size: 38px;
+  margin-bottom: 18px;
+}
+
+.home-card h2 {
+  margin: 0 0 18px;
+  font-size: 1.35rem;
+}
+
+.home-card p {
+  margin: 0;
+  font-size: 1rem;
+}
