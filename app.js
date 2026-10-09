@@ -1434,9 +1434,10 @@ const nextRound =
 
   roundBox.textContent = `Giornata ${nextRound.round}`;
 
-  matchesBox.innerHTML = nextRound.matches
-    .slice(0, 4)
-    .map(m => `
+  
+matchesBox.innerHTML = nextRound.matches
+  .map(m => `
+
       <div class="home-match">
         <span>${esc(m.home)}</span>
         <strong>${esc(saved[`${m.home}|${m.away}`] || m.score || 'VS')}</strong>
