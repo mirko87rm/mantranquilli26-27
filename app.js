@@ -529,6 +529,7 @@ if($('saleTeamFilter')){
 
 await loadPlayerSales();
 await renderMyPlayerSales();
+  await renderHomeNextRound();
 }
 function renderTradeTeams(){
  const a=$('teamA'), b=$('teamB'); if(!a||!b)return;
@@ -1392,6 +1393,58 @@ const score=saved[`${m.home}|${m.away}`]||((m.score&&m.score!=='-')?m.score:'-')
  });
  $('calendarContent').innerHTML=html||'<p class="hint">Nessuna partita.</p>';
 }
+
+async function renderHomeNextRound(){
+  const roundBox = $('homeNextRound');
+  const matchesBox = $('homeNextMatches');
+
+  if(!roundBox || !matchesBox) return;
+
+  const rounds = currentLeagueId === '48084771-cf8f-4f93-b842-1e7ae4422560'
+    ? (activeCalendar === 'coppa' ? FANTAURELIA_COPPA : FANTAURELIA_CAMPIONATO)
+    : (CALENDARS[activeCalendar] || []);
+
+  if(!rounds.length){
+    roundBox.textContent = 'Calendario non disponibile';
+    matchesBox.innerHTML = '';
+    return;
+  }
+
+  const results = await db
+    .from('match_results')
+    .select('round,home_team,away_team,score')
+    .eq('series', activeCalendar);
+
+  const saved = {};
+  (results.data || []).forEach(m => {
+    saved[`${m.home_team}|${m.away_team}`] = m.score;
+  });
+
+ 
+const completedRounds = new Set(
+  (results.data || [])
+    .filter(m => m.score && m.score !== '-')
+    .map(m => Number(m.round))
+);
+
+const nextRound =
+  rounds.find(r => !completedRounds.has(Number(r.round))) ||
+  rounds[rounds.length - 1];
+
+
+  roundBox.textContent = `Giornata ${nextRound.round}`;
+
+  matchesBox.innerHTML = nextRound.matches
+    .slice(0, 4)
+    .map(m => `
+      <div class="home-match">
+        <span>${esc(m.home)}</span>
+        <strong>${esc(saved[`${m.home}|${m.away}`] || m.score || 'VS')}</strong>
+        <span>${esc(m.away)}</span>
+      </div>
+    `).join('');
+}
+
 document.querySelectorAll('.calendar-tab').forEach(btn=>btn.onclick=()=>{
  document.querySelectorAll('.calendar-tab').forEach(b=>b.classList.remove('active'));
  btn.classList.add('active');activeCalendar=btn.dataset.cal;renderCalendarRoundOptions();
