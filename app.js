@@ -1274,6 +1274,22 @@ async function renderStandings(){
             <td><strong>${r.pts}</strong></td>
         </tr>
     `).join('');
+  
+  
+const homeStandings = $('homeStandingsPreview');
+
+if(homeStandings){
+  homeStandings.innerHTML = rows
+    .slice(0, 4)
+    .map((r, i) => `
+      <div class="home-standing-row">
+        <span>${i + 1}. ${esc(r.name)}</span>
+        <strong>${r.pts} pt</strong>
+      </div>
+    `)
+    .join('');
+}
+-
 
     const info=$('standingsInfo');
 
