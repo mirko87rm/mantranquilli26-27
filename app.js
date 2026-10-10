@@ -1280,7 +1280,7 @@ const homeStandings = $('homeStandingsPreview');
 
 if(homeStandings){
   homeStandings.innerHTML = rows
-    .slice(0, 4)
+    .slice(0, 14)
     .map((r, i) => `
       <div class="home-standing-row">
         <span>${i + 1}. ${esc(r.name)}</span>
