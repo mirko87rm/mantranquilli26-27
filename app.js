@@ -1289,7 +1289,7 @@ if(homeStandings){
     `)
     .join('');
 }
--
+
 
     const info=$('standingsInfo');
 
