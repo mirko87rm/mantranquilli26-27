@@ -602,3 +602,15 @@ header {
   height: 100px;
   width: 100px;
 }
+
+/* Classifica completa nella Home FantaHub */
+.home-card:nth-child(2) {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.home-card:nth-child(2) .home-standing-row {
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 2px 0;
+}
