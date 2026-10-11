@@ -891,6 +891,10 @@ async function loadTrades(){
 
 
 async function loadHomeSales(){
+  if(!currentLeagueId){
+  console.error('FantaHub: currentLeagueId è vuoto', currentLeague);
+  return;
+}
   const box = $('homeSales');
   if(!box) return;
 
