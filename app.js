@@ -1730,7 +1730,7 @@ if($('standingsCompetition')){
 updateStandingsView();
 renderStatistics();
 initAuth();
-load().then(() => loadHomeSales());
+
 document.addEventListener('DOMContentLoaded',()=>{
   const whatsapp=$('shareWhatsapp');
 
