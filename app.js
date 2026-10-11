@@ -895,9 +895,10 @@ async function loadHomeSales(){
   if(!box) return;
 
   const r = await db
-    .from('player_sales')
-    .select('player_id,players:player_id(name,role),teams:owner_team_id(name)')
-    .eq('status','active');
+  .from('player_sales')
+  .select('player_id,players:player_id(name,role),teams:owner_team_id!inner(name,fantacalcio_id)')
+  .eq('status','active')
+  .eq('teams.fantacalcio_id', currentLeagueId);
 
   if(r.error){
     box.textContent = 'Errore nel caricamento.';
