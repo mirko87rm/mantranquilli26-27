@@ -889,6 +889,36 @@ async function loadTrades(){
  $('trades').innerHTML=html; if($('homeTrades'))$('homeTrades').innerHTML=html;
 }
 
+
+async function loadHomeSales(){
+  const box = $('homeSales');
+  if(!box) return;
+
+  const r = await db
+    .from('player_sales')
+    .select('player_id,players:player_id(name,role),teams:owner_team_id(name)')
+    .eq('status','active');
+
+  if(r.error){
+    box.textContent = 'Errore nel caricamento.';
+    console.error(r.error);
+    return;
+  }
+
+  if(!r.data || !r.data.length){
+    box.textContent = 'Nessun giocatore in vendita.';
+    return;
+  }
+
+  box.innerHTML = r.data.slice(0,8).map(x => `
+    <div class="home-standing-row">
+      <span>${esc(x.players?.name || 'Giocatore')} — ${esc(x.players?.role || '')}<br>
+      <small>${esc(x.teams?.name || '')}</small></span>
+    </div>
+  `).join('');
+}
+
+
 async function loadAdminPanel(){
   if(!currentProfile?.is_admin)return;
   const m=await db.from('manager_profiles').select('user_id,username,team_id,is_admin,created_at,teams:team_id(name)').order('created_at');
@@ -1696,6 +1726,7 @@ updateStandingsView();
 renderStatistics();
 initAuth();
 load();
+loadHomeSales();
 document.addEventListener('DOMContentLoaded',()=>{
   const whatsapp=$('shareWhatsapp');
 
