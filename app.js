@@ -903,7 +903,8 @@ async function loadHomeSales(){
   .select('player_id,owner_team_id,players:player_id(name,role),teams:owner_team_id!inner(id,name,fantacalcio_id)')
   .eq('status','active')
   .eq('teams.fantacalcio_id', currentLeagueId);
-  
+  console.log('FantaHub - lega selezionata:', currentLeagueId);
+console.log('FantaHub - giocatori in vendita:', r.data, r.error);
   if(r.error){
     box.textContent = 'Errore nel caricamento.';
     console.error(r.error);
