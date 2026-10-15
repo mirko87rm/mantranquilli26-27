@@ -158,6 +158,7 @@ renderRegolamento();
        if($('leagueSwitcher')){
   $('leagueSwitcher').value=currentLeagueId;
 }
+ $('homeSales').textContent = 'Caricamento...';
      await load();
 await loadHomeSales();
       
