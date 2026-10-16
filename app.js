@@ -311,19 +311,25 @@ async function loadRegisterLeagues(){
 }
 
 
+
 function setupNavigation(){
- document.querySelectorAll('.nav-item').forEach(btn=>btn.onclick=()=>{
-   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-   document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active-section'));
-   btn.classList.add('active');
-const target=$('section-'+btn.dataset.section);
-if(target)target.classList.add('active-section');
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active-section'));
 
+      btn.classList.add('active');
 
-   $('sidebar').classList.remove('open');
-   window.scrollTo({top:0,behavior:'smooth'});
- });
- $('menuToggle').onclick=()=>$('sidebar').classList.toggle('open');
+      const target=document.getElementById('section-'+btn.dataset.section);
+      if(target) target.classList.add('active-section');
+
+      document.querySelector('.sidebar')?.classList.remove('open');
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+  });
+
+  const menuToggle=$('menuToggle');
+  if(menuToggle) menuToggle.onclick=()=> $('sidebar').classList.toggle('open');
 }
 setupNavigation();
 
