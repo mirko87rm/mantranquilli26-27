@@ -113,6 +113,7 @@ renderRegolamento();
     localStorage.setItem('currentLeagueId',currentLeagueId);
 
     await load();
+    await loadHomeSales();
 await renderCalendarRoundOptions();
 document.body.classList.remove('choosing-league');
 document.body.classList.add('league-selected');
