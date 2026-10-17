@@ -936,6 +936,7 @@ console.log('FantaHub - giocatori in vendita:', r.data, r.error);
 }
 
 
+
 async function loadAdminPanel(){
   if(!currentProfile?.is_admin)return;
   const m=await db.from('manager_profiles').select('user_id,username,team_id,is_admin,created_at,teams:team_id(name)').order('created_at');
