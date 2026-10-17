@@ -114,6 +114,7 @@ renderRegolamento();
 
     await load();
     await loadHomeSales();
+    await loadHomeStats();
 await renderCalendarRoundOptions();
 document.body.classList.remove('choosing-league');
 document.body.classList.add('league-selected');
