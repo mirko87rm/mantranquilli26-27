@@ -810,3 +810,14 @@ header {
     opacity: 1 !important;
   }
 }
+
+
+/* Riduce l'intestazione su smartphone */
+@media (max-width: 600px) {
+  header {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+  }
+}
