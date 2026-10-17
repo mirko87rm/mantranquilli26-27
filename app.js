@@ -901,39 +901,96 @@ async function loadTrades(){
 }
 
 
+
 async function loadHomeSales(){
   if(!currentLeagueId){
-  console.error('FantaHub: currentLeagueId è vuoto', currentLeague);
-  return;
-}
+    console.error('FantaHub: currentLeagueId è vuoto');
+    return;
+  }
+
   const box = $('homeSales');
   if(!box) return;
 
+  box.innerHTML = 'Caricamento giocatori...';
+
   const r = await db
-  .from('player_sales')
-  .select('player_id,owner_team_id,players:player_id(name,role),teams:owner_team_id!inner(id,name,fantacalcio_id)')
-  .eq('status','active')
-  .eq('teams.fantacalcio_id', currentLeagueId);
-  console.log('FantaHub - lega selezionata:', currentLeagueId);
-console.log('FantaHub - giocatori in vendita:', r.data, r.error);
+    .from('player_sales')
+    .select('player_id,owner_team_id,players:player_id(name,role),teams:owner_team_id!inner(id,name,fantacalcio_id)')
+    .eq('status','active')
+    .eq('teams.fantacalcio_id', currentLeagueId);
+
   if(r.error){
     box.textContent = 'Errore nel caricamento.';
     console.error(r.error);
     return;
   }
 
-  if(!r.data || !r.data.length){
-    box.textContent = 'Nessun giocatore in vendita.';
+  const rows = r.data || [];
+
+  if(!rows.length){
+    box.innerHTML = '<p class="hint">Nessun giocatore in vendita.</p>';
     return;
   }
 
-  box.innerHTML = r.data.slice(0,8).map(x => `
-    <div class="home-standing-row">
-      <span>${esc(x.players?.name || 'Giocatore')} — ${esc(x.players?.role || '')}<br>
-      <small>${esc(x.teams?.name || '')}</small></span>
-    </div>
-  `).join('');
+  const pageSize = 5;
+  let page = 0;
+  const totalPages = Math.ceil(rows.length / pageSize);
+
+  function renderPage(){
+    const start = page * pageSize;
+    const visible = rows.slice(start, start + pageSize);
+
+    box.innerHTML = `
+      <div class="home-sales-list">
+        ${visible.map(x => `
+          <div class="home-standing-row">
+            <span>
+              ${esc(x.players?.name || 'Giocatore')} — ${esc(x.players?.role || '')}<br>
+              <small>${esc(x.teams?.name || '')}</small>
+            </span>
+          </div>
+        `).join('')}
+      </div>
+
+      ${totalPages > 1 ? `
+        <div class="home-sales-pagination"
+             style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:10px;">
+          <button type="button" id="homeSalesPrev"
+            ${page === 0 ? 'disabled' : ''}
+            aria-label="Pagina precedente">◀</button>
+          <span>${page + 1} / ${totalPages}</span>
+          <button type="button" id="homeSalesNext"
+            ${page === totalPages - 1 ? 'disabled' : ''}
+            aria-label="Pagina successiva">▶</button>
+        </div>
+      ` : ''}
+    `;
+
+    const prev = $('homeSalesPrev');
+    const next = $('homeSalesNext');
+
+    if(prev){
+      prev.onclick = () => {
+        if(page > 0){
+          page--;
+          renderPage();
+        }
+      };
+    }
+
+    if(next){
+      next.onclick = () => {
+        if(page < totalPages - 1){
+          page++;
+          renderPage();
+        }
+      };
+    }
+  }
+
+  renderPage();
 }
+
 
 
 async function loadHomeStats(){
