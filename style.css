@@ -616,3 +616,116 @@ header {
   line-height: 1.35;
   padding: 2px 0;
 }
+
+
+/* ===== FANTAHUB: CORREZIONI SMARTPHONE ===== */
+@media (max-width: 700px) {
+  html,
+  body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    width: 100%;
+  }
+
+  body.league-selected {
+    overflow: auto !important;
+  }
+
+  body.league-selected .layout {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+
+  body.league-selected main {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    padding: 0 12px 24px !important;
+  }
+
+  body.league-selected #section-home {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+
+  body.league-selected .home-dashboard {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 20px 12px 30px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  body.league-selected .home-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 18px !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere;
+  }
+
+  body.league-selected .home-card h2 {
+    font-size: 1.15rem !important;
+  }
+
+  body.league-selected .home-card p,
+  body.league-selected .home-card .home-standing-row {
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  header {
+    position: relative;
+    box-sizing: border-box;
+    padding-right: 76px !important;
+  }
+
+  .menu-toggle {
+    position: fixed !important;
+    top: 16px !important;
+    right: 12px !important;
+    z-index: 1001 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0 !important;
+    font-size: 26px !important;
+    line-height: 1;
+  }
+
+  .auth-modal {
+    overflow-y: auto;
+    align-items: center;
+    padding: 16px !important;
+    box-sizing: border-box;
+  }
+
+  .auth-box {
+    width: 100% !important;
+    max-width: 430px;
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 28px 20px !important;
+  }
+
+  .auth-close {
+    top: 8px !important;
+    right: 10px !important;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    font-size: 32px !important;
+  }
+}
