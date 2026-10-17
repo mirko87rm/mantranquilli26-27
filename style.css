@@ -729,3 +729,49 @@ header {
     font-size: 32px !important;
   }
 }
+
+
+/* FIX LOGIN MOBILE: X VISIBILE E FINESTRA IN PRIMO PIANO */
+@media (max-width: 700px) {
+  #authModal {
+    z-index: 99999 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    padding: 12px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #authModal .auth-box {
+    position: relative !important;
+    z-index: 100000 !important;
+    width: 100% !important;
+    max-width: 430px !important;
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+    padding: 54px 20px 28px !important;
+    box-sizing: border-box !important;
+  }
+
+  #authModal #closeAuth,
+  #authModal .auth-close {
+    display: flex !important;
+    position: absolute !important;
+    top: 8px !important;
+    right: 10px !important;
+    z-index: 100001 !important;
+    width: 40px !important;
+    height: 40px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: #eeeeee !important;
+    color: #111111 !important;
+    border: 1px solid #cccccc !important;
+    border-radius: 50% !important;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+  }
+}
