@@ -775,3 +775,38 @@ header {
     cursor: pointer !important;
   }
 }
+
+
+/* FIX LOGO E PULSANTI LOGIN SU CELLULARE */
+@media (max-width: 700px) {
+  .fantahub-logo {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    display: block !important;
+    width: 90px !important;
+    height: 90px !important;
+    margin: 12px auto !important;
+  }
+
+  #authArea {
+    position: relative !important;
+    z-index: 10 !important;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    margin: 12px auto !important;
+  }
+
+  #authArea button {
+    position: relative !important;
+    z-index: 11 !important;
+  }
+
+  #authModal .auth-close {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
