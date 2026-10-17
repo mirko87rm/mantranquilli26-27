@@ -1927,9 +1927,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   if(whatsapp){
     whatsapp.onclick=()=>{
-      const url='https://mantranquillisitocorrettogiocatorip-gamma.vercel.app';
-      const text='⚽ Entra nel mio Fantacalcio MANTRANQUILLI26/27!\n\n👉 '+url;
-
+const url = 'https://fantahub-calcio.vercel.app';
+const text = '⚽ Entra nel mio FantaHub\n\n👉 ' + url;
       window.open(
         'https://wa.me/?text='+encodeURIComponent(text),
         '_blank'
