@@ -845,3 +845,42 @@ header {
     margin-bottom: 8px !important;
   }
 }
+
+
+/* Compatta l'intestazione su smartphone */
+@media (max-width: 600px) {
+  body > header {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 12px 16px !important;
+    gap: 8px !important;
+  }
+
+  header .fantahub-logo {
+    width: 64px !important;
+    height: 64px !important;
+    margin: 4px auto !important;
+  }
+
+  header h1 {
+    font-size: 24px !important;
+    margin: 0 !important;
+  }
+
+  header p {
+    margin: 2px 0 !important;
+  }
+
+  header #authArea {
+    margin: 4px 0 !important;
+  }
+
+  header .connection,
+  header #connectionStatus {
+    margin: 0 !important;
+  }
+
+  header > i {
+    margin: 4px 0 !important;
+  }
+}
