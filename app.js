@@ -936,6 +936,66 @@ console.log('FantaHub - giocatori in vendita:', r.data, r.error);
 }
 
 
+async function loadHomeStats(){
+  const box = $('homeStats');
+  if(!box) return;
+
+  if(!currentLeagueId || !teams.length){
+    box.textContent = 'Seleziona un Fantacalcio.';
+    return;
+  }
+
+  box.textContent = 'Caricamento statistiche...';
+
+  try {
+    const teamNames = new Set(
+      teams.map(t => String(t.name).trim().toUpperCase())
+    );
+
+    const [results, sales] = await Promise.all([
+      db.from('match_results')
+        .select('home_team,away_team,score'),
+      db.from('player_sales')
+        .select('player_id,teams:owner_team_id!inner(fantacalcio_id)')
+        .eq('status','active')
+        .eq('teams.fantacalcio_id', currentLeagueId)
+    ]);
+
+    if(results.error) throw results.error;
+    if(sales.error) throw sales.error;
+
+    const played = (results.data || []).filter(m =>
+      teamNames.has(String(m.home_team).trim().toUpperCase()) &&
+      teamNames.has(String(m.away_team).trim().toUpperCase()) &&
+      scoreParts(m.score) !== null
+    );
+
+    const goals = played.reduce((total, m) => {
+      const score = scoreParts(m.score);
+      return total + score[0] + score[1];
+    }, 0);
+
+    box.innerHTML = `
+      <div class="home-standing-row">
+        <span>🏆 Squadre</span><strong>${teams.length}</strong>
+      </div>
+      <div class="home-standing-row">
+        <span>⚽ Partite disputate</span><strong>${played.length}</strong>
+      </div>
+      <div class="home-standing-row">
+        <span>🥅 Gol segnati</span><strong>${goals}</strong>
+      </div>
+      <div class="home-standing-row">
+        <span>🔄 Giocatori in vendita</span>
+        <strong>${(sales.data || []).length}</strong>
+      </div>
+    `;
+  } catch(error) {
+    console.error('Errore statistiche Home:', error);
+    box.textContent = 'Errore nel caricamento delle statistiche.';
+  }
+}
+
 
 async function loadAdminPanel(){
   if(!currentProfile?.is_admin)return;
