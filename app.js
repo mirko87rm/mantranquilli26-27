@@ -993,6 +993,7 @@ async function loadHomeSales(){
 
 
 
+
 async function loadHomeStats(){
   const box = $('homeStats');
   if(!box) return;
@@ -1002,49 +1003,108 @@ async function loadHomeStats(){
     return;
   }
 
-  box.textContent = 'Caricamento statistiche...';
+  box.innerHTML = 'Caricamento statistiche...';
 
   try {
     const teamNames = new Set(
       teams.map(t => String(t.name).trim().toUpperCase())
     );
 
-    const [results, sales] = await Promise.all([
-      db.from('match_results')
-        .select('home_team,away_team,score'),
-      db.from('player_sales')
-        .select('player_id,teams:owner_team_id!inner(fantacalcio_id)')
-        .eq('status','active')
-        .eq('teams.fantacalcio_id', currentLeagueId)
-    ]);
+    let matches = [];
 
-    if(results.error) throw results.error;
-    if(sales.error) throw sales.error;
+    if(currentLeagueId === '48084771-cf8f-4f93-b842-1e7ae4422560'){
+      matches = FANTAURELIA_CAMPIONATO.flatMap(r =>
+        r.matches
+          .filter(m => m.home && m.away)
+          .map(m => ({
+            home_team: m.home,
+            away_team: m.away,
+            score: m.score
+          }))
+      );
+    } else {
+      const result = await db
+        .from('match_results')
+        .select('home_team,away_team,score')
+        .eq('series','serie');
 
-    const played = (results.data || []).filter(m =>
-      teamNames.has(String(m.home_team).trim().toUpperCase()) &&
-      teamNames.has(String(m.away_team).trim().toUpperCase()) &&
-      scoreParts(m.score) !== null
-    );
+      if(result.error) throw result.error;
+      matches = result.data || [];
+    }
 
-    const goals = played.reduce((total, m) => {
+    const stats = {};
+
+    teams.forEach(t => {
+      stats[t.name.toUpperCase()] = {
+        name: t.name,
+        played: 0,
+        wins: 0,
+        gf: 0,
+        ga: 0
+      };
+    });
+
+    matches.forEach(m => {
       const score = scoreParts(m.score);
-      return total + score[0] + score[1];
-    }, 0);
+      if(!score) return;
+
+      const home = stats[String(m.home_team || '').toUpperCase()];
+      const away = stats[String(m.away_team || '').toUpperCase()];
+
+      if(!home || !away) return;
+
+      home.played++;
+      away.played++;
+
+      home.gf += score[0];
+      home.ga += score[1];
+
+      away.gf += score[1];
+      away.ga += score[0];
+
+      if(score[0] > score[1]) home.wins++;
+      else if(score[1] > score[0]) away.wins++;
+    });
+
+    const list = Object.values(stats);
+
+    const bestAttack = [...list].sort((a,b) =>
+      b.gf - a.gf || a.name.localeCompare(b.name)
+    )[0];
+
+    const bestDefense = [...list].sort((a,b) =>
+      a.ga - b.ga || a.name.localeCompare(b.name)
+    )[0];
+
+    const mostWins = [...list].sort((a,b) =>
+      b.wins - a.wins || a.name.localeCompare(b.name)
+    )[0];
+
+    const bestAverage = [...list].sort((a,b) =>
+      (b.played ? b.gf / b.played : 0) -
+      (a.played ? a.gf / a.played : 0) ||
+      a.name.localeCompare(b.name)
+    )[0];
+
+    const average = t =>
+      t && t.played ? (t.gf / t.played).toFixed(2) : '0.00';
 
     box.innerHTML = `
-      <div class="home-standing-row">
-        <span>🏆 Squadre</span><strong>${teams.length}</strong>
+      <div class="home-stat-highlight">
+        <span>⚽ Miglior attacco</span>
+        <strong>${esc(bestAttack?.name || '—')} · ${bestAttack?.gf || 0} gol</strong>
       </div>
-      <div class="home-standing-row">
-        <span>⚽ Partite disputate</span><strong>${played.length}</strong>
+      <div class="home-stat-highlight">
+        <span>🛡️ Miglior difesa</span>
+        <strong>${esc(bestDefense?.name || '—')} · ${bestDefense?.ga || 0} gol subiti</strong>
       </div>
-      <div class="home-standing-row">
-        <span>🥅 Gol segnati</span><strong>${goals}</strong>
+      <div class="home-stat-highlight">
+        <span>🏆 Più vittorie</span>
+        <strong>${esc(mostWins?.name || '—')} · ${mostWins?.wins || 0}</strong>
       </div>
-      <div class="home-standing-row">
-        <span>🔄 Giocatori in vendita</span>
-        <strong>${(sales.data || []).length}</strong>
+      <div class="home-stat-highlight">
+        <span>📈 Media gol più alta</span>
+        <strong>${esc(bestAverage?.name || '—')} · ${average(bestAverage)} a partita</strong>
       </div>
     `;
   } catch(error) {
@@ -1052,6 +1112,7 @@ async function loadHomeStats(){
     box.textContent = 'Errore nel caricamento delle statistiche.';
   }
 }
+
 
 
 async function loadAdminPanel(){
