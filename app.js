@@ -243,6 +243,7 @@ if(userId && leagueId && teamId){
   await refreshAuth();
 }
 async function loadRegisterLeagues(){
+  console.log('Caricamento fantacalci per registrazione');
   const leagueSelect=$('registerLeague');
   const teamSelect=$('registerTeam');
 
