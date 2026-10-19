@@ -6,12 +6,19 @@ const $=id=>document.getElementById(id);let teams=[],players=[],marketOpen=false
 let currentUser=null,currentProfile=null;
 let currentLeagueId=null;
 let currentLeague=null;function authMessage(el,msg,error=false){if(el){el.textContent=msg||'';el.classList.toggle('error',!!error)}}
-function openAuth(mode='login'){
+
+async function openAuth(mode='login'){
   $('authModal').classList.remove('hidden');
   $('loginForm').classList.toggle('hidden',mode!=='login');
   $('registerForm').classList.toggle('hidden',mode!=='register');
-  authMessage($('loginFeedback'),'');authMessage($('registerFeedback'),'');
+  authMessage($('registerFeedback'),'');
+  authMessage($('loginFeedback'),'');
+
+  if(mode==='register'){
+    await loadRegisterLeagues();
+  }
 }
+
 function closeAuth(){$('authModal').classList.add('hidden')}
 function setAuthUI(){
   const area=$('authArea'); if(!area)return;
