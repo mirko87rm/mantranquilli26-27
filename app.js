@@ -194,10 +194,16 @@ await loadHomeSales();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage($('registerFeedback'),'Inserisci un indirizzo email valido.',true);
     if(password.length<6)return authMessage($('registerFeedback'),'La password deve avere almeno 6 caratteri.',true);
     if(!leagueId)return authMessage($('registerFeedback'),'Seleziona un Fantacalcio.',true);
-if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
-    if(!teamId)return authMessage($('registerFeedback'),'Seleziona una squadra.',true);
+if(!teamId)return authMessage(
+  $('registerFeedback'),
+  'Seleziona una squadra.',
+  true
+);
 
-    const taken=await db.from('manager_profiles').select('team_id').eq('team_id',teamId).maybeSingle();
+    const taken=await db.from('manager_profiles')
+      .select('team_id')
+      .eq('team_id',teamId)
+      .maybeSingle();
     if(taken.data)return authMessage($('registerFeedback'),'Questa squadra è già stata assegnata a un altro account.',true);
 
    const r=await db.auth.signUp({
