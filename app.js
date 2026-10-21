@@ -77,112 +77,65 @@ $('leagueChooser')?.classList.remove('hidden');
 
 await loadMyLeagues();
 };
-async function loadMyLeagues(){
-  if(!currentUser)return;
 
-  const r=await db
+async function loadMyLeagues(){
+  if(!currentUser) return;
+
+  const r = await db
     .from('fantacalcio_members')
-   .select('fantacalcio_id, team_id, is_admin, fantacalci(id,name,season)')
-    .eq('user_id',currentUser.id);
+    .select('fantacalcio_id, team_id, is_admin, fantacalci(id,name,season)')
+    .eq('user_id', currentUser.id);
 
   if(r.error){
     console.error(r.error);
-    show(r.error.message,true);
+    show(r.error.message, true);
     return;
   }
-const switcher=$('leagueSwitcher');
 
-if(switcher){
-  switcher.innerHTML=r.data.map(m=>{
-    const league=m.fantacalci;
-    return `<option value="${league.id}">${esc(league.name)}</option>`;
-  }).join('');
+  const memberships = r.data || [];
 
-  if(currentLeagueId){
-    switcher.value=currentLeagueId;
-  }
+  const switcher = $('leagueSwitcher');
+  const chooser = $('leagueChooser');
+  const list = $('myLeagues');
 
-  switcher.onchange=async()=>{
-    const id=switcher.value;
-    const selected=r.data.find(m=>String(m.fantacalcio_id)===String(id));
-
-    if(!selected)return;
-
-    currentLeagueId=selected.fantacalcio_id;
-    currentLeague=selected.fantacalci;
-renderRegolamento();
-    
-    if(currentProfile){
-      currentProfile.team_id=selected.team_id;
-      currentProfile.is_admin=selected.is_admin;
+  if(!memberships.length){
+    if(list){
+      list.innerHTML = '<p>Non sei ancora iscritto a nessun Fantacalcio.</p>';
     }
-
-    localStorage.setItem('currentLeagueId',currentLeagueId);
-
-    await load();
-    await loadHomeSales();
-    await loadHomeStats();
-await renderCalendarRoundOptions();
-document.body.classList.remove('choosing-league');
-document.body.classList.add('league-selected');
-
-    show('Entrato in '+currentLeague.name,false);
-
-    console.log('Fantacalcio cambiato:',currentLeague);
-  };
-}
-  const chooser=$('leagueChooser');
-  const list=$('myLeagues');
-
-  if(!chooser || !list)return;
-
-  if(!r.data || !r.data.length){
-    list.innerHTML='<p>Non sei ancora registrato in nessun Fantacalcio.</p>';
-    chooser.classList.remove('hidden');
+    chooser?.classList.remove('hidden');
+    switcher?.classList.add('hidden');
     return;
   }
 
-  list.innerHTML=r.data.map(m=>{
-    const league=m.fantacalci;
-    return `
-      <button class="league-card" data-league-id="${league.id}">
-        <strong>${esc(league.name)}</strong>
-        <span>Stagione ${esc(league.season || '')}</span>
-      </button>
-    `;
-  }).join('');
+  if(switcher){
+    switcher.innerHTML = memberships.map(m => {
+      const league = m.fantacalci;
+      return `<option value="${league.id}">${esc(league.name)}</option>`;
+    }).join('');
 
- chooser.classList.remove('hidden');
+    switcher.value = String(
+      memberships.some(m => String(m.fantacalcio_id) === String(currentLeagueId))
+        ? currentLeagueId
+        : memberships[0].fantacalcio_id
+    );
+  }
 
-  list.querySelectorAll('.league-card').forEach(button=>{
-  button.onclick=async()=>{      const id=button.dataset.leagueId;
-      const selected=r.data.find(m=>String(m.fantacalcio_id)===String(id));
+  if(list){
+    list.innerHTML = memberships.map(m => {
+      const league = m.fantacalci;
+      return `
+        <button class="league-card"
+                data-league-id="${league.id}">
+          <strong>${esc(league.name)}</strong>
+          <span>Stagione ${esc(league.season || '')}</span>
+        </button>
+      `;
+    }).join('');
+  }
 
-      if(!selected)return;
-
-      currentLeagueId=selected.fantacalcio_id;
-      currentLeague=selected.fantacalci;
-renderRegolamento();
-      localStorage.setItem('currentLeagueId',currentLeagueId);
-       if($('leagueSwitcher')){
-  $('leagueSwitcher').value=currentLeagueId;
+  chooser?.classList.toggle('hidden', memberships.length > 0);
 }
- $('homeSales').textContent = 'Caricamento...';
-   
-await load();
-await loadHomeSales();
-      
-      document.body.classList.remove('choosing-league');
-      document.body.classList.add('league-selected');
 
-      chooser.classList.add('hidden');
-      $('welcomeHome')?.classList.add('hidden');
-
-
-      console.log('Fantacalcio selezionato:',currentLeague);
-    };
-  });
-};
   $('registerBtn').onclick=async()=>{
     const username=$('registerUsername').value.trim().toLowerCase();
     const email=$('registerEmail').value.trim().toLowerCase();
