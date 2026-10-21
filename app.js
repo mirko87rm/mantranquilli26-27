@@ -93,6 +93,10 @@ async function loadMyLeagues(){
   }
 
   const memberships = r.data || [];
+  
+  console.log('Utente corrente:', currentUser?.id);
+console.log('Iscrizioni trovate:', memberships);
+console.log('Errore query:', r.error);
 
   const switcher = $('leagueSwitcher');
   const chooser = $('leagueChooser');
