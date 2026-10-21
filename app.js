@@ -260,27 +260,14 @@ async function loadRegisterLeagues(){
       return;
     }
 
-    const used = await db
-  .from('fantacalcio_members')
-  .select('team_id')
-  .eq('fantacalcio_id', leagueId);
-
-if (used.error) {
-  console.error(used.error);
-  teamSelect.innerHTML = '<option value="">Errore caricamento squadre</option>';
-  return;
-}
-
-const usedIds = new Set(
-  (used.data || []).map(x => String(x.team_id))
-);
-
-    teamSelect.innerHTML=
-      '<option value="">Seleziona la squadra...</option>'+
-      r.data
-        .filter(t=>!usedIds.has(String(t.id)))
-        .map(t=>`<option value="${t.id}">${esc(t.name)}</option>`)
+    
+teamSelect.innerHTML =
+    '<option value="">Seleziona la squadra...</option>' +
+    r.data
+        .map(t => `<option value="${t.id}">${esc(t.name)}</option>`)
         .join('');
+
+teamSelect.disabled = false;
 
     teamSelect.disabled=false;
   };
