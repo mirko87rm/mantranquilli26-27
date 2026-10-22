@@ -138,6 +138,65 @@ console.log('Errore query:', r.error);
   }
 
   chooser?.classList.toggle('hidden', memberships.length > 0);
+
+  // Collega il selettore alla lega scelta e carica i dati della lega.
+  const activateLeague = async (leagueId, league) => {
+    if (!leagueId) return;
+    currentLeagueId = String(leagueId);
+    currentLeague = league || memberships.find(
+      m => String(m.fantacalcio_id) === currentLeagueId
+    )?.fantacalci || null;
+
+    if (switcher) switcher.value = currentLeagueId;
+    document.body.classList.add('league-selected');
+    document.body.classList.remove('choosing-league');
+    $('welcomeHome')?.classList.add('hidden');
+    chooser?.classList.add('hidden');
+
+    const connection = $('connection');
+    if (connection) connection.textContent = 'Connessione al database...';
+
+    try {
+      await load();
+      await loadHomeSales();
+      await loadHomeStats();
+      await loadTrades();
+    } catch (error) {
+      console.error('Errore caricamento Fantacalcio:', error);
+      if (connection) connection.textContent = 'Errore di caricamento';
+      show(error?.message || 'Errore durante il caricamento del Fantacalcio.', true);
+    }
+  };
+
+  if (switcher) {
+    switcher.onchange = async () => {
+      const selected = memberships.find(
+        m => String(m.fantacalcio_id) === String(switcher.value)
+      );
+      if (selected) await activateLeague(selected.fantacalcio_id, selected.fantacalci);
+    };
+  }
+
+  if (list) {
+    list.querySelectorAll('.league-card').forEach(card => {
+      card.onclick = async () => {
+        const selected = memberships.find(
+          m => String(m.fantacalcio_id) === String(card.dataset.leagueId)
+        );
+        if (selected) await activateLeague(selected.fantacalcio_id, selected.fantacalci);
+      };
+    });
+  }
+
+  // Se l'utente è iscritto a più leghe, ripristina quella selezionata;
+  // al primo accesso usa la prima iscrizione disponibile.
+  const defaultMembership = memberships.find(
+    m => String(m.fantacalcio_id) === String(currentLeagueId)
+  ) || memberships[0];
+
+  if (defaultMembership) {
+    await activateLeague(defaultMembership.fantacalcio_id, defaultMembership.fantacalci);
+  }
 }
 
   $('registerBtn').onclick=async()=>{
@@ -204,13 +263,26 @@ if(userId && leagueId && teamId){
     if(!r.data.session){
       return authMessage($('registerFeedback'),'Account creato. Controlla la tua email e clicca sul link di conferma, poi torna qui per accedere.',false);
     }
-    closeAuth();await refreshAuth();show('Account creato e squadra assegnata.',false);
+    closeAuth();await refreshAuth();await loadMyLeagues();show('Account creato e squadra assegnata.',false);
   };
 
   // Evita deadlock di Supabase Auth: non eseguire getSession() direttamente
   // dentro onAuthStateChange. Rimandiamo il refresh al ciclo successivo.
-  db.auth.onAuthStateChange(()=>{setTimeout(()=>refreshAuth(),0);});
+  db.auth.onAuthStateChange(()=>{setTimeout(async()=>{
+    await refreshAuth();
+    if (!currentUser) {
+      currentLeagueId = null;
+      currentLeague = null;
+      teams = [];
+      players = [];
+      document.body.classList.remove('league-selected');
+      document.body.classList.add('choosing-league');
+      const connection = $('connection');
+      if (connection) connection.textContent = 'Accedi e seleziona un Fantacalcio';
+    }
+  },0);});
   await refreshAuth();
+  if (currentUser) await loadMyLeagues();
 }
 async function loadRegisterLeagues(){
   console.log('Caricamento fantacalci per registrazione');
@@ -1882,8 +1954,11 @@ if($('standingsCompetition')){
 
 updateStandingsView();
 renderStatistics();
-initAuth();
-load().then(() => loadHomeSales());
+initAuth().catch(error => {
+  console.error('Errore inizializzazione autenticazione:', error);
+  const connection = $('connection');
+  if (connection) connection.textContent = 'Errore di inizializzazione';
+});
 document.addEventListener('DOMContentLoaded',()=>{
   const whatsapp=$('shareWhatsapp');
 
