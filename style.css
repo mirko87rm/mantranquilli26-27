@@ -552,7 +552,7 @@ body.league-selected {
 body.league-selected .layout {
   height: calc(100vh - 100px);
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 body.league-selected main {
@@ -560,7 +560,7 @@ body.league-selected main {
   min-height: 0;
   padding: 0 !important;
   margin: 0 !important;
-  overflow: hidden !important;
+  overflow-y: auto !important;
 }
 
 body.league-selected #section-home {
