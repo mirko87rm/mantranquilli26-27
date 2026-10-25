@@ -4,6 +4,7 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);let teams=[],players=[],marketOpen=false;
 
 let currentUser=null,currentProfile=null;
+let currentTeamContext=null;
 let currentLeagueId=null;
 let currentLeague=null;function authMessage(el,msg,error=false){if(el){el.textContent=msg||'';el.classList.toggle('error',!!error)}}
 
@@ -35,13 +36,60 @@ async function refreshAuth(){
   if(currentUser){
     const p=await db.from('manager_profiles').select('username,team_id,is_admin,teams:team_id(name)').eq('user_id',currentUser.id).maybeSingle();
     if(!p.error)currentProfile=p.data;
-  }
+    currentTeamContext=null;
+    const ctx=await db.rpc('get_my_team_context');
+    if(!ctx.error && Array.isArray(ctx.data) && ctx.data.length){
+      currentTeamContext=ctx.data[0];
+      if(currentProfile && currentTeamContext.team_id){
+        currentProfile={...currentProfile, team_id:currentTeamContext.team_id,
+          team:{name:currentTeamContext.team_name}, is_coach:!!currentTeamContext.is_coach,
+          owner_username:currentTeamContext.owner_username||null};
+      }
+    }
+  } else { currentTeamContext=null; }
   setAuthUI();
   updateAdminUI();
+  updateCoachUI();
   renderTradeTeams();
   fill();
   if(currentProfile?.is_admin)loadAdminPanel();
 }
+function updateCoachUI(){
+  const nav=document.querySelector('.nav-item[data-section="rose"]');
+  const card=$('coachManagementCard');
+  const isOwner=!!(currentUser && currentProfile && !currentProfile.is_coach && currentProfile.team_id);
+  if(card)card.classList.toggle('hidden',!isOwner);
+  if(nav) nav.title=currentProfile?.is_coach ? 'Rosa condivisa: allenatore in seconda' : 'Rose delle squadre';
+  if(isOwner) loadTeamCoaches().catch(e=>console.error(e));
+}
+async function loadTeamCoaches(){
+  const box=$('teamCoachesList'); if(!box || !currentUser || !currentProfile || currentProfile.is_coach)return;
+  box.textContent='Caricamento allenatori…';
+  const r=await db.rpc('list_team_coaches');
+  if(r.error){box.textContent='Impossibile caricare gli allenatori: '+r.error.message;return;}
+  const rows=Array.isArray(r.data)?r.data:[];
+  box.innerHTML=rows.length?rows.map(x=>`<div class="coach-row"><span><strong>${esc(x.username)}</strong> · Allenatore in seconda</span><button type="button" class="secondary coach-remove" data-user-id="${esc(x.coach_user_id)}">Revoca accesso</button></div>`).join(''):'<p class="hint">Nessun allenatore in seconda associato.</p>';
+  box.querySelectorAll('.coach-remove').forEach(btn=>btn.onclick=async()=>{
+    if(!confirm('Vuoi revocare l’accesso di questo allenatore alla tua squadra?'))return;
+    btn.disabled=true;
+    const out=await db.rpc('remove_team_coach',{p_coach_user_id:btn.dataset.userId});
+    if(out.error){show(out.error.message,true);btn.disabled=false;return;}
+    show('Accesso revocato.',false);await loadTeamCoaches();
+  });
+}
+async function addTeamCoach(){
+  const input=$('coachUsername'), feedback=$('coachFeedback'), button=$('addCoachBtn');
+  if(!currentUser || !currentProfile || currentProfile.is_coach)return;
+  const username=(input?.value||'').trim().toLowerCase();
+  if(!/^[a-z0-9_-]{3,30}$/.test(username)){authMessage(feedback,'Inserisci lo username dell’account già registrato (3-30 caratteri).',true);return;}
+  button.disabled=true;authMessage(feedback,'Associazione in corso…');
+  const r=await db.rpc('add_team_coach',{p_username:username});
+  button.disabled=false;
+  if(r.error){authMessage(feedback,r.error.message,true);return;}
+  input.value='';authMessage(feedback,'Allenatore in seconda aggiunto.',false);await loadTeamCoaches();
+}
+if($('addCoachBtn')) $('addCoachBtn').onclick=addTeamCoach;
+
 function updateAdminUI(){
   const nav=$('adminNav');
   if(!nav)return;
@@ -92,7 +140,11 @@ async function loadMyLeagues(){
     return;
   }
 
-  const memberships = r.data || [];
+  let memberships = r.data || [];
+  if(currentTeamContext?.is_coach && currentTeamContext.fantacalcio_id){
+    memberships=[{fantacalcio_id:currentTeamContext.fantacalcio_id,team_id:currentTeamContext.team_id,is_admin:false,
+      fantacalci:{id:currentTeamContext.fantacalcio_id,name:currentTeamContext.fantacalcio_name,season:currentTeamContext.season}}];
+  }
   
   console.log('Utente corrente:', currentUser?.id);
 console.log('Iscrizioni trovate:', memberships);

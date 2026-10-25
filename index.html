@@ -6,6 +6,9 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+.coach-add-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}.coach-add-row input{flex:1;min-width:200px}.coach-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid #8884}.coach-remove{white-space:nowrap}
+</style>
 </head>
 <body>
 <header style="position:relative"><button id="menuToggle" class="menu-toggle" aria-label="Apri menu">☰</button>  <div><h1>FANTAHUB</h1><p>La tua casa del Fantacalcio</p></div>
@@ -191,6 +194,14 @@
 
 <section id="section-rose" class="page-section">
   <section class="card"><h2>Rose delle squadre</h2><div class="roster-head"><label>Squadra<select id="rosterTeam"></select></label><input id="rosterSearch" type="search" placeholder="Cerca giocatore…"></div><div id="rosterSummary" class="hint"></div><div id="roster" class="roster-grid">Caricamento…</div></section>
+  <section id="coachManagementCard" class="card hidden">
+    <h2>👥 Gestione allenatori</h2>
+    <p class="hint">Associa un account già registrato alla tua squadra. L’allenatore in seconda condividerà la gestione della rosa, ma non riceverà i privilegi ADMIN.</p>
+    <label for="coachUsername">Username dell’account da aggiungere</label>
+    <div class="coach-add-row"><input id="coachUsername" maxlength="30" autocomplete="off" placeholder="es. nomeutente"><button type="button" id="addCoachBtn">Aggiungi allenatore</button></div>
+    <p id="coachFeedback" class="feedback"></p>
+    <h3>Allenatori associati</h3><div id="teamCoachesList"><p class="hint">Accedi per gestire gli allenatori.</p></div>
+  </section>
 </section>
 
 <section id="section-calendario" class="page-section">
