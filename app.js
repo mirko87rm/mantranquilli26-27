@@ -57,7 +57,7 @@ async function refreshAuth(){
 function updateCoachUI(){
   const nav=document.querySelector('.nav-item[data-section="rose"]');
   const card=$('coachManagementCard');
-  const isOwner=!!(currentUser && currentProfile && !currentProfile.is_coach && currentProfile.team_id);
+  const isOwner=!!(currentUser && currentProfile && currentProfile.team_id && (!currentProfile.is_coach || currentProfile.is_admin));
   if(card)card.classList.toggle('hidden',!isOwner);
   if(nav) nav.title=currentProfile?.is_coach ? 'Rosa condivisa: allenatore in seconda' : 'Rose delle squadre';
   if(isOwner) loadTeamCoaches().catch(e=>console.error(e));
