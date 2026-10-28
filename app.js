@@ -57,7 +57,7 @@ async function refreshAuth(){
 function updateCoachUI(){
   const nav=document.querySelector('.nav-item[data-section="rose"]');
   const card=$('coachManagementCard');
-  const isOwner=!!(currentUser && currentProfile && !currentProfile.is_coach && currentProfile.team_id);
+  const isOwner=!!(currentUser && currentProfile && currentProfile.team_id && (!currentProfile.is_coach || currentProfile.is_admin));
   if(card)card.classList.toggle('hidden',!isOwner);
   if(nav) nav.title=currentProfile?.is_coach ? 'Rosa condivisa: allenatore in seconda' : 'Rose delle squadre';
   if(isOwner) loadTeamCoaches().catch(e=>console.error(e));
@@ -141,33 +141,9 @@ async function loadMyLeagues(){
   }
 
   let memberships = r.data || [];
-
-  // Aggiunge anche i fantacalci in cui l'utente è allenatore in seconda.
-  // Questa lista viene recuperata da una RPC SECURITY DEFINER perché la lettura
-  // diretta di team_coaches può essere limitata dalle policy RLS.
-  if (currentUser) {
-    const coachResult = await db.rpc('get_my_coach_leagues');
-    if (coachResult.error) {
-      console.error('Impossibile caricare i fantacalci da allenatore in seconda:', coachResult.error);
-    } else {
-      const knownLeagueIds = new Set(memberships.map(m => String(m.fantacalcio_id)));
-      for (const coachLeague of (coachResult.data || [])) {
-        const leagueId = String(coachLeague.fantacalcio_id || '');
-        if (!leagueId || knownLeagueIds.has(leagueId)) continue;
-        memberships.push({
-          fantacalcio_id: leagueId,
-          team_id: coachLeague.team_id,
-          is_admin: false,
-          is_coach: true,
-          fantacalci: {
-            id: leagueId,
-            name: coachLeague.fantacalcio_name,
-            season: coachLeague.season
-          }
-        });
-        knownLeagueIds.add(leagueId);
-      }
-    }
+  if(currentTeamContext?.is_coach && currentTeamContext.fantacalcio_id){
+    memberships=[{fantacalcio_id:currentTeamContext.fantacalcio_id,team_id:currentTeamContext.team_id,is_admin:false,
+      fantacalci:{id:currentTeamContext.fantacalcio_id,name:currentTeamContext.fantacalcio_name,season:currentTeamContext.season}}];
   }
   
   console.log('Utente corrente:', currentUser?.id);
