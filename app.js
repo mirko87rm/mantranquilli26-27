@@ -140,55 +140,34 @@ async function loadMyLeagues(){
     return;
   }
 
-  // Mantieni le iscrizioni personali e aggiungi anche i fantacalci
-  // delle squadre per cui l'utente è allenatore in seconda.
   let memberships = r.data || [];
 
-  // Recupera le associazioni da team_coaches: il team determina il fantacalcio.
-  // Se la policy RLS non consente la lettura, l'errore viene registrato e
-  // restano disponibili le iscrizioni personali già recuperate sopra.
-  const coachTeamsResult = await db
-    .from('team_coaches')
-    .select('team_id, teams:team_id(id,name,fantacalcio_id,fantacalci:fantacalcio_id(id,name,season))')
-    .eq('coach_user_id', currentUser.id);
-
-  if(coachTeamsResult.error){
-    console.warn('Impossibile recuperare le leghe da allenatore in seconda:', coachTeamsResult.error.message);
-  }else{
-    for(const association of (coachTeamsResult.data || [])){
-      const team = association.teams;
-      const league = team?.fantacalci;
-      if(!team || !league?.id) continue;
-      const leagueId = String(league.id);
-      const existing = memberships.find(m => String(m.fantacalcio_id) === leagueId);
-      if(existing){
-        // La lega era già presente: aggiorna la squadra associata al ruolo coach
-        // solo quando l'utente non è proprietario di una squadra in quella lega.
-        if(!existing.team_id) existing.team_id = team.id;
-      }else{
+  // Aggiunge anche i fantacalci in cui l'utente è allenatore in seconda.
+  // Questa lista viene recuperata da una RPC SECURITY DEFINER perché la lettura
+  // diretta di team_coaches può essere limitata dalle policy RLS.
+  if (currentUser) {
+    const coachResult = await db.rpc('get_my_coach_leagues');
+    if (coachResult.error) {
+      console.error('Impossibile caricare i fantacalci da allenatore in seconda:', coachResult.error);
+    } else {
+      const knownLeagueIds = new Set(memberships.map(m => String(m.fantacalcio_id)));
+      for (const coachLeague of (coachResult.data || [])) {
+        const leagueId = String(coachLeague.fantacalcio_id || '');
+        if (!leagueId || knownLeagueIds.has(leagueId)) continue;
         memberships.push({
-          fantacalcio_id: league.id,
-          team_id: team.id,
+          fantacalcio_id: leagueId,
+          team_id: coachLeague.team_id,
           is_admin: false,
-          fantacalci: {id: league.id, name: league.name, season: league.season}
+          is_coach: true,
+          fantacalci: {
+            id: leagueId,
+            name: coachLeague.fantacalcio_name,
+            season: coachLeague.season
+          }
         });
+        knownLeagueIds.add(leagueId);
       }
     }
-  }
-
-  // Fallback per una versione della funzione RPC che restituisce una sola lega.
-  if(currentTeamContext?.is_coach && currentTeamContext.fantacalcio_id &&
-     !memberships.some(m => String(m.fantacalcio_id) === String(currentTeamContext.fantacalcio_id))){
-    memberships.push({
-      fantacalcio_id: currentTeamContext.fantacalcio_id,
-      team_id: currentTeamContext.team_id,
-      is_admin: false,
-      fantacalci: {
-        id: currentTeamContext.fantacalcio_id,
-        name: currentTeamContext.fantacalcio_name,
-        season: currentTeamContext.season
-      }
-    });
   }
   
   console.log('Utente corrente:', currentUser?.id);
