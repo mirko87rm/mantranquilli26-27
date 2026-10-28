@@ -37,7 +37,7 @@ async function refreshAuth(){
     const p=await db.from('manager_profiles').select('username,team_id,is_admin,teams:team_id(name)').eq('user_id',currentUser.id).maybeSingle();
     if(!p.error)currentProfile=p.data;
     currentTeamContext=null;
-    const ctx=await db.rpc('get_my_team_context');
+const ctx=await db.rpc('get_my_team_context',{p_fantacalcio_id:currentLeagueId});
     if(!ctx.error && Array.isArray(ctx.data) && ctx.data.length){
       currentTeamContext=ctx.data[0];
       if(currentProfile && currentTeamContext.team_id){
