@@ -57,7 +57,7 @@ async function refreshAuth(){
 function updateCoachUI(){
   const nav=document.querySelector('.nav-item[data-section="rose"]');
   const card=$('coachManagementCard');
-  const isOwner=!!(currentUser && currentProfile && currentProfile.team_id && (!currentProfile.is_coach || currentProfile.is_admin));
+  const isOwner=!!(currentUser && currentProfile && !currentProfile.is_coach && currentProfile.team_id);
   if(card)card.classList.toggle('hidden',!isOwner);
   if(nav) nav.title=currentProfile?.is_coach ? 'Rosa condivisa: allenatore in seconda' : 'Rose delle squadre';
   if(isOwner) loadTeamCoaches().catch(e=>console.error(e));
@@ -140,10 +140,55 @@ async function loadMyLeagues(){
     return;
   }
 
+  // Mantieni le iscrizioni personali e aggiungi anche i fantacalci
+  // delle squadre per cui l'utente è allenatore in seconda.
   let memberships = r.data || [];
-  if(currentTeamContext?.is_coach && currentTeamContext.fantacalcio_id){
-    memberships=[{fantacalcio_id:currentTeamContext.fantacalcio_id,team_id:currentTeamContext.team_id,is_admin:false,
-      fantacalci:{id:currentTeamContext.fantacalcio_id,name:currentTeamContext.fantacalcio_name,season:currentTeamContext.season}}];
+
+  // Recupera le associazioni da team_coaches: il team determina il fantacalcio.
+  // Se la policy RLS non consente la lettura, l'errore viene registrato e
+  // restano disponibili le iscrizioni personali già recuperate sopra.
+  const coachTeamsResult = await db
+    .from('team_coaches')
+    .select('team_id, teams:team_id(id,name,fantacalcio_id,fantacalci:fantacalcio_id(id,name,season))')
+    .eq('coach_user_id', currentUser.id);
+
+  if(coachTeamsResult.error){
+    console.warn('Impossibile recuperare le leghe da allenatore in seconda:', coachTeamsResult.error.message);
+  }else{
+    for(const association of (coachTeamsResult.data || [])){
+      const team = association.teams;
+      const league = team?.fantacalci;
+      if(!team || !league?.id) continue;
+      const leagueId = String(league.id);
+      const existing = memberships.find(m => String(m.fantacalcio_id) === leagueId);
+      if(existing){
+        // La lega era già presente: aggiorna la squadra associata al ruolo coach
+        // solo quando l'utente non è proprietario di una squadra in quella lega.
+        if(!existing.team_id) existing.team_id = team.id;
+      }else{
+        memberships.push({
+          fantacalcio_id: league.id,
+          team_id: team.id,
+          is_admin: false,
+          fantacalci: {id: league.id, name: league.name, season: league.season}
+        });
+      }
+    }
+  }
+
+  // Fallback per una versione della funzione RPC che restituisce una sola lega.
+  if(currentTeamContext?.is_coach && currentTeamContext.fantacalcio_id &&
+     !memberships.some(m => String(m.fantacalcio_id) === String(currentTeamContext.fantacalcio_id))){
+    memberships.push({
+      fantacalcio_id: currentTeamContext.fantacalcio_id,
+      team_id: currentTeamContext.team_id,
+      is_admin: false,
+      fantacalci: {
+        id: currentTeamContext.fantacalcio_id,
+        name: currentTeamContext.fantacalcio_name,
+        season: currentTeamContext.season
+      }
+    });
   }
   
   console.log('Utente corrente:', currentUser?.id);
